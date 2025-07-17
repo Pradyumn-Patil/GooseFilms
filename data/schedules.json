@@ -1,1 +1,69 @@
-{}
+{
+    "2025-07-17": [
+      {
+        "id": 1752714892619.775,
+        "movie": {
+          "adult": false,
+          "backdrop_path": "/ueG3GoXs1ZX22CnBl5amCGUFIBC.jpg",
+          "genre_ids": [
+            37,
+            28,
+            35
+          ],
+          "id": 26905,
+          "original_language": "en",
+          "original_title": "Boss Nigger",
+          "overview": "Two black bounty hunters ride into a small town out West in pursuit of an outlaw. They discover that the town has no sheriff, and soon take over that position, much against the will of the mostly white townsfolk.",
+          "popularity": 0.7702,
+          "poster_path": "/4atyb5cZclgGgvkszWxIjkGhd2D.jpg",
+          "release_date": "1975-08-17",
+          "title": "Boss Nigger",
+          "video": false,
+          "vote_average": 6.673,
+          "vote_count": 55
+        },
+        "showtimes": [
+          "8:45 PM"
+        ],
+        "theater": {
+          "id": 1,
+          "name": "GooseFilms Downtown",
+          "address": "123 Cinema Boulevard, Downtown District"
+        },
+        "dateAdded": "2025-07-17T01:14:52.619Z"
+      }
+    ],
+    "2025-07-24": [
+      {
+        "id": 1752715140702.8093,
+        "movie": {
+          "adult": false,
+          "backdrop_path": "/hEhOPX1NCke6ky7930NqNXZYuu1.jpg",
+          "genre_ids": [
+            35,
+            27
+          ],
+          "id": 21588,
+          "original_language": "it",
+          "original_title": "DellaMorte DellAmore",
+          "overview": "Cemetery watchman, Francesco Dellamorte, is tasked with dispatching the recently deceased when they rise from their graves.",
+          "popularity": 1.6969,
+          "poster_path": "/cI5AV3jCuxmoQp0N7Z16SI2b7Xk.jpg",
+          "release_date": "1994-03-25",
+          "title": "Cemetery Man",
+          "video": false,
+          "vote_average": 6.906,
+          "vote_count": 540
+        },
+        "showtimes": [
+          "8:45 PM"
+        ],
+        "theater": {
+          "id": 1,
+          "name": "GooseFilms Downtown",
+          "address": "123 Cinema Boulevard, Downtown District"
+        },
+        "dateAdded": "2025-07-17T01:19:00.702Z"
+      }
+    ]
+  }
