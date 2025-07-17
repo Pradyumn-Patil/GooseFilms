@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineClub - Movie Showtimes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        h1 {
+            color: white;
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2em;
+            font-weight: 300;
+        }
+
+        .admin-link {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .admin-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .movies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .movie-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .movie-poster {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            color: white;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .movie-poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 0;
+        }
+
+        .poster-fallback {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3em;
+        }
+
+        .movie-info {
+            padding: 25px;
+        }
+
+        .movie-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .movie-genre {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .showtime-section {
+            margin-top: 20px;
+        }
+
+        .showtime-date {
+            font-weight: bold;
+            color: #34495e;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .showtime-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .time-slot {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            font-weight: 500;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease;
+        }
+
+        .time-slot:hover {
+            transform: scale(1.05);
+        }
+
+        .location {
+            background: rgba(52, 73, 94, 0.1);
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 10px;
+            border-left: 4px solid #3498db;
+        }
+
+        .location-name {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .location-address {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        .filter-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 10px 20px;
+            border-radius: 25px;
+            margin: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 1.5em;
+            margin: 40px 0;
+        }
+
+        .error {
+            text-align: center;
+            color: #ff6b6b;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .movie-rating {
+            background: #f39c12;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .movie-overview {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.4;
+            margin: 10px 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        @media (max-width: 768px) {
+            .movies-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+
+            .admin-link {
+                position: static;
+                display: inline-block;
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="login.html" class="admin-link">🔧 Admin Panel</a>
+            <h1>🎬 CineClub</h1>
+            <p class="subtitle">Your Ultimate Movie Experience</p>
+        </header>
+
+        <div class="filter-section">
+            <button class="filter-btn active" onclick="filterMovies('all')">All Movies</button>
+            <button class="filter-btn" onclick="filterMovies('today')">Today</button>
+            <button class="filter-btn" onclick="filterMovies('tomorrow')">Tomorrow</button>
+            <button class="filter-btn" onclick="filterMovies('weekend')">Weekend</button>
+        </div>
+
+        <div class="movies-grid" id="moviesGrid">
+            <!-- Movies will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="js/fileStorage.js"></script>
+    <script src="js/movieAPI.js"></script>
+    <script src="js/scheduleManager.js"></script>
+    <script>
+        // Main application class
+        class CineClubApp {
+            constructor() {
+                this.movies = [];
+                this.genres = {};
+                this.init();
+            }
+
+            async init() {
+                try {
+                    // Fetch genres first
+                    this.genres = await movieAPI.fetchGenres();
+                    
+                    // Load scheduled movies
+                    await this.loadScheduledMovies();
+                    
+                    // Display movies
+                    this.displayMovies(this.movies);
+                } catch (error) {
+                    console.error('Error initializing app:', error);
+                    this.showError('Failed to load movies. Please check your internet connection.');
+                }
+            }
+
+            async loadScheduledMovies() {
+                const grid = document.getElementById('moviesGrid');
+                grid.innerHTML = '<div class="loading">Loading scheduled movies...</div>';
+
+                // Ensure scheduleManager is fully initialized
+                await scheduleManager.ensureInitialized();
+
+                // Get ALL scheduled movies
+                const allSchedules = scheduleManager.schedules;
+                
+                console.log('All schedules loaded:', allSchedules); // Debug log
+                
+                if (Object.keys(allSchedules).length === 0) {
+                    console.log('No scheduled movies found, falling back to TMDB'); // Debug log
+                    // No scheduled movies, fall back to TMDB now playing
+                    await this.loadFallbackMovies();
+                    return;
+                }
+
+                // Process scheduled movies
+                const processedMovies = [];
+                const seenMovies = new Set();
+
+                Object.entries(allSchedules).forEach(([date, daySchedules]) => {
+                    console.log(`Processing date ${date} with ${daySchedules.length} schedules`); // Debug log
+                    daySchedules.forEach(schedule => {
+                        const movieKey = schedule.movie.id;
+                        
+                        if (!seenMovies.has(movieKey)) {
+                            seenMovies.add(movieKey);
+                            
+                            // Create formatted showtimes
+                            const showtimes = [{
+                                date: scheduleManager.formatDisplayDate(date),
+                                times: schedule.showtimes,
+                                location: schedule.theater
+                            }];
+
+                            const movie = {
+                                ...schedule.movie,
+                                showtimes: showtimes,
+                                genreNames: schedule.movie.genre_ids ? 
+                                    schedule.movie.genre_ids.map(id => this.genres[id]).filter(Boolean) : 
+                                    ['General']
+                            };
+
+                            processedMovies.push(movie);
+                            console.log(`Added movie: ${movie.title}`); // Debug log
+                        } else {
+                            // Add additional showtime to existing movie
+                            const existingMovie = processedMovies.find(m => m.id === movieKey);
+                            if (existingMovie) {
+                                existingMovie.showtimes.push({
+                                    date: scheduleManager.formatDisplayDate(date),
+                                    times: schedule.showtimes,
+                                    location: schedule.theater
+                                });
+                                console.log(`Added showtime to existing movie: ${existingMovie.title}`); // Debug log
+                            }
+                        }
+                    });
+                });
+
+                console.log(`Total processed movies: ${processedMovies.length}`); // Debug log
+                this.movies = processedMovies;
+            }
+
+            async loadFallbackMovies() {
+                try {
+                    const nowPlayingMovies = await movieAPI.fetchNowPlayingMovies();
+                    
+                    // Add fake showtimes for fallback movies
+                    this.movies = nowPlayingMovies.slice(0, 12).map(movie => ({
+                        ...movie,
+                        showtimes: this.generateFakeShowtimes(),
+                        genreNames: movie.genre_ids.map(id => this.genres[id]).filter(Boolean)
+                    }));
+                } catch (error) {
+                    console.error('Error loading fallback movies:', error);
+                    this.showError('Unable to load movies. Please check your API configuration.');
+                }
+            }
+
+            generateFakeShowtimes() {
+                const dates = [
+                    "Today - " + new Date().toLocaleDateString(),
+                    "Tomorrow - " + new Date(Date.now() + 86400000).toLocaleDateString(),
+                    "This Weekend"
+                ];
+                
+                const timeSlots = ["1:00 PM", "4:15 PM", "7:30 PM", "10:00 PM"];
+                
+                return dates.slice(0, Math.floor(Math.random() * 2) + 1).map(date => ({
+                    date,
+                    times: timeSlots.slice(0, Math.floor(Math.random() * 3) + 2),
+                    location: CONFIG.THEATERS[Math.floor(Math.random() * CONFIG.THEATERS.length)]
+                }));
+            }
+
+            createMovieCard(movie) {
+                const posterPath = movieAPI.getImageUrl(movie.poster_path);
+                const genreText = movie.genreNames.length > 0 ? 
+                    movie.genreNames.slice(0, 2).join(' • ') : 'General';
+                
+                return `
+                    <div class="movie-card">
+                        <div class="movie-poster" style="${posterPath ? `background-image: url('${posterPath}');` : ''}">
+                            ${!movie.poster_path ? '<div class="poster-fallback">🎬</div>' : ''}
+                        </div>
+                        <div class="movie-info">
+                            <h2 class="movie-title">${movie.title}</h2>
+                            <div class="movie-genre">${genreText}</div>
+                            <div class="movie-rating">⭐ ${movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}</div>
+                            <div class="movie-overview">${movie.overview || 'No description available.'}</div>
+                            ${movie.showtimes.map(showtime => `
+                                <div class="showtime-section">
+                                    <div class="showtime-date">${showtime.date}</div>
+                                    <div class="showtime-details">
+                                        ${showtime.times.map(time => `<span class="time-slot">${time}</span>`).join('')}
+                                    </div>
+                                    <div class="location">
+                                        <div class="location-name">📍 ${showtime.location.name}</div>
+                                        <div class="location-address">${showtime.location.address}</div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            displayMovies(moviesToShow = this.movies) {
+                const grid = document.getElementById('moviesGrid');
+                if (moviesToShow.length === 0) {
+                    grid.innerHTML = `
+                        <div class="loading">
+                            <h3>No movies scheduled</h3>
+                            <p>Please contact the administrator to schedule movies.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                grid.innerHTML = moviesToShow.map(movie => this.createMovieCard(movie)).join('');
+            }
+
+            filterMovies(filter) {
+                // Remove active class from all buttons
+                document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                
+                // Add active class to clicked button
+                event.target.classList.add('active');
+                
+                let filteredMovies = this.movies;
+                
+                if (filter === 'today') {
+                    filteredMovies = this.movies.filter(movie => 
+                        movie.showtimes.some(showtime => showtime.date.includes('Today'))
+                    );
+                } else if (filter === 'tomorrow') {
+                    filteredMovies = this.movies.filter(movie => 
+                        movie.showtimes.some(showtime => showtime.date.includes('Tomorrow'))
+                    );
+                } else if (filter === 'weekend') {
+                    filteredMovies = this.movies.filter(movie => 
+                        movie.showtimes.some(showtime => 
+                            showtime.date.includes('Saturday') || 
+                            showtime.date.includes('Sunday') ||
+                            showtime.date.includes('Weekend')
+                        )
+                    );
+                }
+                
+                this.displayMovies(filteredMovies);
+            }
+
+            showError(message) {
+                const grid = document.getElementById('moviesGrid');
+                grid.innerHTML = `
+                    <div class="error">
+                        <h3>Oops! Something went wrong</h3>
+                        <p>${message}</p>
+                        <p>Please try refreshing the page.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Global function for filter buttons
+        function filterMovies(filter) {
+            app.filterMovies(filter);
+        }
+
+        // Initialize the application
+        let app;
+        document.addEventListener('DOMContentLoaded', () => {
+            app = new CineClubApp();
+        });
+    </script>
+</body>
+</html>
