@@ -14,18 +14,22 @@ const CONFIG = {
     
     THEATERS: [
         {
+            id: 1,
             name: "GooseFilms Downtown",
             address: "123 Cinema Boulevard, Downtown District"
         },
         {
+            id: 2,
             name: "GooseFilms Westside", 
             address: "456 Entertainment Ave, West End"
         },
         {
+            id: 3,
             name: "GooseFilms IMAX",
             address: "789 Premium Plaza, City Center"
         },
         {
+            id: 4,
             name: "GooseFilms Drive-In",
             address: "321 Sunset Drive, Suburban Area"
         }
