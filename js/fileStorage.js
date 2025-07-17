@@ -1,193 +1,119 @@
 // File-based storage manager for movie schedules
 class FileStorage {
     constructor() {
-        this.storageFile = 'data/schedules.txt';
-        this.theatersFile = 'data/theaters.txt';
-        this.ensureDataDirectory();
+        this.scheduleFile = 'data/schedules.json';
+        this.isLocalEnvironment = this.detectLocalEnvironment();
     }
 
-    // Ensure data directory exists (in a real implementation, this would be server-side)
-    ensureDataDirectory() {
-        // Note: This is a client-side implementation. In production, you'd need a server.
-        console.log('File storage initialized. In production, use a proper server-side implementation.');
+    // Detect if running locally vs GitHub Pages
+    detectLocalEnvironment() {
+        return window.location.protocol === 'file:' || 
+               window.location.hostname === 'localhost' || 
+               window.location.hostname === '127.0.0.1' ||
+               window.location.hostname === '';
     }
 
-    // Save schedules to file (simulated with localStorage for demo)
+    // Save schedules to JSON file (local only)
     async saveSchedules(schedules) {
         try {
-            // Convert schedules to CSV format
-            const csvData = this.schedulesToCSV(schedules);
-            
-            // For demo purposes, we'll still use localStorage but format as CSV
-            localStorage.setItem('schedules_csv', csvData);
-            
-            // In production, you would make an API call to save to server
-            // await fetch('/api/save-schedules', { 
-            //     method: 'POST', 
-            //     body: csvData,
-            //     headers: { 'Content-Type': 'text/plain' }
-            // });
-            
-            console.log('Schedules saved to file storage');
-            return true;
+            if (this.isLocalEnvironment) {
+                // Local environment: use localStorage but also export JSON for commit
+                localStorage.setItem('movie_schedules', JSON.stringify(schedules, null, 2));
+                
+                // Auto-download JSON file for easy commit to GitHub
+                this.exportSchedulesJSON(schedules);
+                
+                console.log('Schedules saved locally. JSON file downloaded for GitHub commit.');
+                return true;
+            } else {
+                // GitHub Pages: Read-only mode
+                console.log('Cannot save schedules on GitHub Pages. Schedule locally and commit the data file.');
+                return false;
+            }
         } catch (error) {
             console.error('Error saving schedules:', error);
             return false;
         }
     }
 
-    // Load schedules from file
+    // Load schedules from JSON file or localStorage
     async loadSchedules() {
         try {
-            // In production, you would fetch from server
-            // const response = await fetch('/api/schedules.csv');
-            // const csvData = await response.text();
-            
-            // For demo, load from localStorage
-            const csvData = localStorage.getItem('schedules_csv');
-            
-            if (!csvData) {
-                return {};
+            if (this.isLocalEnvironment) {
+                // Local: Try to load from localStorage first, then from file
+                const localData = localStorage.getItem('movie_schedules');
+                if (localData) {
+                    return JSON.parse(localData);
+                }
             }
             
-            return this.csvToSchedules(csvData);
+            // Try to load from committed JSON file (works on both local and GitHub Pages)
+            try {
+                const response = await fetch('./data/schedules.json');
+                if (response.ok) {
+                    const schedules = await response.json();
+                    console.log('Loaded schedules from committed data file');
+                    return schedules;
+                }
+            } catch (fetchError) {
+                console.log('No committed schedule data found, starting fresh');
+            }
+            
+            return {};
         } catch (error) {
             console.error('Error loading schedules:', error);
             return {};
         }
     }
 
-    // Convert schedules object to CSV format
-    schedulesToCSV(schedules) {
-        const headers = 'Date,MovieId,MovieTitle,MoviePoster,MovieOverview,MovieRating,MovieGenres,MovieReleaseDate,Showtimes,TheaterId,TheaterName,TheaterAddress,ScheduleId,DateAdded\n';
+    // Export schedules as JSON file for GitHub commit
+    exportSchedulesJSON(schedules) {
+        const jsonData = JSON.stringify(schedules, null, 2);
+        const blob = new Blob([jsonData], { type: 'application/json' });
+        const url = window.URL.createObjectURL(blob);
         
-        let csvContent = headers;
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'schedules.json';
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
         
-        Object.entries(schedules).forEach(([date, daySchedules]) => {
-            daySchedules.forEach(schedule => {
-                const row = [
-                    date,
-                    schedule.movie.id || '',
-                    `"${(schedule.movie.title || '').replace(/"/g, '""')}"`,
-                    schedule.movie.poster_path || '',
-                    `"${(schedule.movie.overview || '').replace(/"/g, '""')}"`,
-                    schedule.movie.vote_average || '',
-                    `"${JSON.stringify(schedule.movie.genre_ids || [])}"`,
-                    schedule.movie.release_date || '',
-                    `"${JSON.stringify(schedule.showtimes)}"`,
-                    schedule.theater.id,
-                    `"${schedule.theater.name.replace(/"/g, '""')}"`,
-                    `"${schedule.theater.address.replace(/"/g, '""')}"`,
-                    schedule.id,
-                    schedule.dateAdded
-                ].join(',');
-                
-                csvContent += row + '\n';
-            });
-        });
-        
-        return csvContent;
+        // Show instructions to user
+        this.showCommitInstructions();
     }
 
-    // Convert CSV data back to schedules object
-    csvToSchedules(csvData) {
-        const lines = csvData.split('\n');
-        const schedules = {};
-        
-        // Skip header line
-        for (let i = 1; i < lines.length; i++) {
-            const line = lines[i].trim();
-            if (!line) continue;
+    // Show instructions for committing the data file
+    showCommitInstructions() {
+        if (this.isLocalEnvironment) {
+            const instructions = `
+📁 SCHEDULE DATA SAVED!
+
+To update your GitHub Pages website with the new schedule:
+
+1. A 'schedules.json' file has been downloaded
+2. Move this file to: /data/schedules.json in your project
+3. Commit and push to GitHub:
+   
+   git add data/schedules.json
+   git commit -m "Update movie schedules"
+   git push
+
+Your scheduled movies will then appear on the live website!
+            `;
             
-            try {
-                const fields = this.parseCSVLine(line);
-                if (fields.length < 14) continue;
-                
-                const [date, movieId, movieTitle, moviePoster, movieOverview, movieRating, 
-                       movieGenres, movieReleaseDate, showtimes, theaterId, theaterName, 
-                       theaterAddress, scheduleId, dateAdded] = fields;
-                
-                if (!schedules[date]) {
-                    schedules[date] = [];
-                }
-                
-                // Parse JSON fields more safely
-                let parsedGenres = [];
-                let parsedShowtimes = [];
-                
-                try {
-                    parsedGenres = JSON.parse(movieGenres || '[]');
-                } catch (e) {
-                    console.warn('Error parsing movie genres:', movieGenres, e);
-                    parsedGenres = [];
-                }
-                
-                try {
-                    parsedShowtimes = JSON.parse(showtimes || '[]');
-                } catch (e) {
-                    console.warn('Error parsing showtimes:', showtimes, e);
-                    // Fallback: try to extract showtimes as simple array
-                    parsedShowtimes = [showtimes.replace(/["\[\]]/g, '')];
-                }
-                
-                const schedule = {
-                    id: parseFloat(scheduleId),
-                    movie: {
-                        id: parseInt(movieId),
-                        title: movieTitle,
-                        poster_path: moviePoster,
-                        overview: movieOverview,
-                        vote_average: parseFloat(movieRating) || 0,
-                        genre_ids: parsedGenres,
-                        release_date: movieReleaseDate
-                    },
-                    showtimes: parsedShowtimes,
-                    theater: {
-                        id: parseInt(theaterId),
-                        name: theaterName,
-                        address: theaterAddress
-                    },
-                    dateAdded: dateAdded
-                };
-                
-                schedules[date].push(schedule);
-            } catch (error) {
-                console.error('Error parsing CSV line:', line, error);
+            console.log(instructions);
+            
+            // Optional: Show popup with instructions
+            if (confirm('Schedule saved! Click OK to see instructions for updating your live website.')) {
+                alert(instructions);
             }
         }
-        
-        return schedules;
     }
 
-    // Simple CSV parser that handles quoted fields
-    parseCSVLine(line) {
-        const result = [];
-        let current = '';
-        let inQuotes = false;
-        
-        for (let i = 0; i < line.length; i++) {
-            const char = line[i];
-            
-            if (char === '"') {
-                if (inQuotes && line[i + 1] === '"') {
-                    current += '"';
-                    i++;
-                } else {
-                    inQuotes = !inQuotes;
-                }
-            } else if (char === ',' && !inQuotes) {
-                result.push(current);
-                current = '';
-            } else {
-                current += char;
-            }
-        }
-        
-        result.push(current);
-        return result;
-    }
-
-    // Export schedules as downloadable CSV
+    // Export schedules as downloadable CSV (for backup)
     exportSchedules(schedules) {
         const csvData = this.schedulesToCSV(schedules);
         const blob = new Blob([csvData], { type: 'text/csv' });
@@ -195,29 +121,44 @@ class FileStorage {
         
         const a = document.createElement('a');
         a.href = url;
-        a.download = `movie_schedules_${new Date().toISOString().split('T')[0]}.csv`;
+        a.download = `movie_schedules_backup_${new Date().toISOString().split('T')[0]}.csv`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         window.URL.revokeObjectURL(url);
     }
 
-    // Import schedules from CSV file
-    async importSchedules(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                try {
-                    const csvData = e.target.result;
-                    const schedules = this.csvToSchedules(csvData);
-                    resolve(schedules);
-                } catch (error) {
-                    reject(error);
-                }
-            };
-            reader.onerror = reject;
-            reader.readAsText(file);
+    // Convert schedules to CSV format for backup
+    schedulesToCSV(schedules) {
+        const headers = 'Date,MovieTitle,MovieRating,Showtimes,TheaterName,TheaterAddress\n';
+        let csvContent = headers;
+        
+        Object.entries(schedules).forEach(([date, daySchedules]) => {
+            daySchedules.forEach(schedule => {
+                const row = [
+                    date,
+                    `"${(schedule.movie.title || '').replace(/"/g, '""')}"`,
+                    schedule.movie.vote_average || '',
+                    `"${(schedule.showtimes || []).join(', ')}"`,
+                    `"${schedule.theater.name.replace(/"/g, '""')}"`,
+                    `"${schedule.theater.address.replace(/"/g, '""')}"`,
+                ].join(',');
+                csvContent += row + '\n';
+            });
         });
+        
+        return csvContent;
+    }
+
+    // Get environment info for admin panel
+    getEnvironmentInfo() {
+        return {
+            isLocal: this.isLocalEnvironment,
+            canSave: this.isLocalEnvironment,
+            dataSource: this.isLocalEnvironment ? 'localStorage + file export' : 'committed data file',
+            hostname: window.location.hostname || 'file://',
+            protocol: window.location.protocol
+        };
     }
 }
 

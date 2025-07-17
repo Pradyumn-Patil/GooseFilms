@@ -179,7 +179,14 @@ class AdminPanel {
                 theaterId
             );
 
-            alert('Movie scheduled successfully!');
+            // Show different messages based on environment
+            const envInfo = fileStorage.getEnvironmentInfo();
+            if (envInfo.isLocal) {
+                alert('Movie scheduled successfully!\n\nA schedules.json file has been downloaded. Move it to /data/schedules.json and commit to GitHub to update your live website.');
+            } else {
+                alert('Movie scheduled successfully! (Note: Changes are only visible locally on GitHub Pages)');
+            }
+            
             this.hideScheduleForm();
             this.renderCalendar();
             this.loadScheduleForSelectedDate();
