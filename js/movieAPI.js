@@ -3,7 +3,7 @@ class MovieAPI {
     constructor() {
         this.apiKey = CONFIG.TMDB_API_KEY;
         this.baseUrl = CONFIG.TMDB_BASE_URL;
-        this.imageBaseUrl = CONFIG.IMAGE_BASE_URL;
+        this.imageBaseUrl = CONFIG.TMDB_IMAGE_BASE_URL;
     }
 
     async makeRequest(endpoint, params = {}) {

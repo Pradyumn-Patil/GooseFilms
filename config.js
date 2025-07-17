@@ -1,6 +1,6 @@
 // Configuration file for API keys and settings
 const CONFIG = {
-    TMDB_API_KEY: '92175e435cae9aafe94bc6a82819ec7b'
+    TMDB_API_KEY: '92175e435cae9aafe94bc6a82819ec7b',
     TMDB_BASE_URL: 'https://api.themoviedb.org/3',
     TMDB_IMAGE_BASE_URL: 'https://image.tmdb.org/t/p/w500',
     
