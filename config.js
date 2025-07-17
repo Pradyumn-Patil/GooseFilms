@@ -1,8 +1,16 @@
 // Configuration file for API keys and settings
 const CONFIG = {
-    TMDB_API_KEY: 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJkZmE5YWVlMzg4ZGY0ZTExYjQ4ZTMwZGQ4MzQwMDc3ZCIsInN1YiI6IjY3NDYyNjcyNmI0NmUwMTEzYjFjOGRjNiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.O8Gn_KoCFsAqOo-lrqzVJJzHHJQG1RVEqV0H_-nfzDk', // Working TMDB API key
+    TMDB_API_KEY: '92175e435cae9aafe94bc6a82819ec7b'
     TMDB_BASE_URL: 'https://api.themoviedb.org/3',
     TMDB_IMAGE_BASE_URL: 'https://image.tmdb.org/t/p/w500',
+    
+    // Admin credentials
+    ADMIN: {
+        username: 'admin',
+        password: 'goosefilms2024!'
+    },
+    
+    ADMIN_PASSWORD: 'goosefilms2024!', // Keep for backwards compatibility
     
     THEATERS: [
         {
@@ -10,7 +18,7 @@ const CONFIG = {
             address: "123 Cinema Boulevard, Downtown District"
         },
         {
-            name: "GooseFilms Westside",
+            name: "GooseFilms Westside", 
             address: "456 Entertainment Ave, West End"
         },
         {
@@ -21,9 +29,7 @@ const CONFIG = {
             name: "GooseFilms Drive-In",
             address: "321 Sunset Drive, Suburban Area"
         }
-    ],
-    
-    ADMIN_PASSWORD: 'goosefilms2024!' // Production password
+    ]
 };
 
 // Export for use in other files
