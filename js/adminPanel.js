@@ -182,7 +182,7 @@ class AdminPanel {
             // Show different messages based on environment
             const envInfo = fileStorage.getEnvironmentInfo();
             if (envInfo.isLocal) {
-                alert('Movie scheduled successfully!\n\nA schedules.json file has been downloaded. Move it to /data/schedules.json and commit to GitHub to update your live website.');
+                alert('Movie scheduled successfully!\n\n🤖 AUTOMATIC WORKFLOW:\n1. Replace /data/schedules.json with the downloaded file\n2. Run: ./auto-commit.sh\n\nThis will automatically commit and push to GitHub Pages!');
             } else {
                 alert('Movie scheduled successfully! (Note: Changes are only visible locally on GitHub Pages)');
             }

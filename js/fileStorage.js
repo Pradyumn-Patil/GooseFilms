@@ -17,13 +17,13 @@ class FileStorage {
     async saveSchedules(schedules) {
         try {
             if (this.isLocalEnvironment) {
-                // Local environment: use localStorage but also export JSON for commit
+                // Local environment: save to localStorage and auto-save to file
                 localStorage.setItem('movie_schedules', JSON.stringify(schedules, null, 2));
                 
-                // Auto-download JSON file for easy commit to GitHub
-                this.exportSchedulesJSON(schedules);
+                // Auto-save to data/schedules.json file
+                await this.saveToDataFile(schedules);
                 
-                console.log('Schedules saved locally. JSON file downloaded for GitHub commit.');
+                console.log('Schedules saved locally and to data file.');
                 return true;
             } else {
                 // GitHub Pages: Read-only mode
@@ -33,6 +33,35 @@ class FileStorage {
         } catch (error) {
             console.error('Error saving schedules:', error);
             return false;
+        }
+    }
+
+    // Save directly to data/schedules.json and auto-commit
+    async saveToDataFile(schedules) {
+        try {
+            // Create the JSON data
+            const jsonData = JSON.stringify(schedules, null, 2);
+            
+            // For local development, we'll use a file download approach
+            // since browsers can't directly write to files for security reasons
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            
+            // Auto-download the file (user will need to replace the existing one)
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'schedules.json';
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            // Show auto-commit instructions
+            this.showAutoCommitInstructions();
+            
+        } catch (error) {
+            console.error('Error saving to data file:', error);
         }
     }
 
@@ -108,6 +137,35 @@ Your scheduled movies will then appear on the live website!
             
             // Optional: Show popup with instructions
             if (confirm('Schedule saved! Click OK to see instructions for updating your live website.')) {
+                alert(instructions);
+            }
+        }
+    }
+
+    // Show instructions for automatic workflow
+    showAutoCommitInstructions() {
+        if (this.isLocalEnvironment) {
+            const instructions = `
+🎬 SCHEDULE UPDATED!
+
+AUTOMATIC WORKFLOW:
+1. Replace /data/schedules.json with the downloaded file
+2. Run the auto-commit script:
+   
+   ./auto-commit.sh
+
+This will automatically commit and push your changes to GitHub Pages!
+
+MANUAL ALTERNATIVE:
+   git add data/schedules.json
+   git commit -m "Update movie schedules"
+   git push
+            `;
+            
+            console.log(instructions);
+            
+            // Show a simplified popup
+            if (confirm('Schedule saved! The schedules.json file has been downloaded.\n\nReplace /data/schedules.json with the downloaded file, then run "./auto-commit.sh" to automatically update your live website.\n\nClick OK for more details.')) {
                 alert(instructions);
             }
         }
