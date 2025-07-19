@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #007AFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0051D5;
+        }
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 5px;
+            background: #e8f4f8;
+            border: 1px solid #b8e0e8;
+        }
+        .error {
+            background: #fee;
+            border-color: #fcc;
+            color: #c00;
+        }
+        .success {
+            background: #efe;
+            border-color: #cfc;
+            color: #060;
+        }
+        code {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Login Test & Debug</h1>
+        
+        <div class="status">
+            <h3>Current Status:</h3>
+            <p id="authStatus">Checking...</p>
+        </div>
+        
+        <h3>Quick Actions:</h3>
+        <button onclick="testLogin()">Test Login with Codeword</button>
+        <button onclick="checkSession()">Check Session</button>
+        <button onclick="clearSession()">Clear Session</button>
+        <button onclick="goToLogin()">Go to Login Page</button>
+        <button onclick="goToAdmin()">Go to Admin (Test Auth)</button>
+        
+        <div id="results" style="margin-top: 20px;"></div>
+        
+        <div style="margin-top: 30px; padding: 20px; background: #f9f9f9; border-radius: 5px;">
+            <h3>Debug Info:</h3>
+            <p><strong>Default Codeword:</strong> <code>goosefilms2024</code></p>
+            <p><strong>Session Key:</strong> <code>goosefilms_admin_session</code></p>
+            <p><strong>Session Duration:</strong> 24 hours</p>
+        </div>
+    </div>
+    
+    <script src="js/simpleAuth.js"></script>
+    <script>
+        // Check initial status
+        checkStatus();
+        
+        function checkStatus() {
+            const statusEl = document.getElementById('authStatus');
+            if (window.simpleAuth && window.simpleAuth.isAuthenticated()) {
+                const info = window.simpleAuth.getSessionInfo();
+                statusEl.innerHTML = `
+                    <span style="color: green;">✅ Authenticated</span><br>
+                    Session expires in: ${info.remainingMinutes} minutes<br>
+                    Login time: ${info.loginTime.toLocaleString()}
+                `;
+            } else {
+                statusEl.innerHTML = '<span style="color: red;">❌ Not authenticated</span>';
+            }
+        }
+        
+        function testLogin() {
+            const codeword = prompt('Enter codeword:', 'goosefilms2024');
+            if (!codeword) return;
+            
+            const result = window.simpleAuth.login(codeword);
+            const resultsDiv = document.getElementById('results');
+            
+            if (result.success) {
+                resultsDiv.innerHTML = '<div class="status success">✅ Login successful!</div>';
+            } else {
+                resultsDiv.innerHTML = '<div class="status error">❌ Login failed: ' + result.error + '</div>';
+            }
+            
+            checkStatus();
+        }
+        
+        function checkSession() {
+            const resultsDiv = document.getElementById('results');
+            const session = localStorage.getItem('goosefilms_admin_session');
+            
+            if (session) {
+                try {
+                    const data = JSON.parse(session);
+                    resultsDiv.innerHTML = `
+                        <div class="status">
+                            <h4>Session Data:</h4>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                } catch (e) {
+                    resultsDiv.innerHTML = '<div class="status error">Invalid session data</div>';
+                }
+            } else {
+                resultsDiv.innerHTML = '<div class="status error">No session found</div>';
+            }
+        }
+        
+        function clearSession() {
+            window.simpleAuth.logout();
+            document.getElementById('results').innerHTML = '<div class="status success">✅ Session cleared</div>';
+            checkStatus();
+        }
+        
+        function goToLogin() {
+            window.location.href = 'login.html';
+        }
+        
+        function goToAdmin() {
+            window.location.href = 'admin.html';
+        }
+    </script>
+</body>
+</html>

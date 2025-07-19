@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GooseFilms - Firebase Setup Guide</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@100;200;300;400;500;600;700;800;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 2.5rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        h2 {
+            color: #34495e;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .step {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 4px solid #007AFF;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .step:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .step.completed {
+            border-left-color: #34C759;
+            background: #f0f9f0;
+        }
+
+        .step h3 {
+            color: #007AFF;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .step.completed h3 {
+            color: #34C759;
+        }
+
+        .step-number {
+            background: #007AFF;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .step.completed .step-number {
+            background: #34C759;
+        }
+
+        .checklist {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .checklist h3 {
+            color: #1976d2;
+            margin-bottom: 15px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .checklist-item label {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tip {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .screenshot {
+            background: #f0f0f0;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 15px 0;
+            border: 2px dashed #ccc;
+            color: #666;
+            font-style: italic;
+        }
+
+        code {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        pre {
+            background: #2c3e50;
+            color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+
+        .button {
+            background: #007AFF;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+
+        .button:hover {
+            background: #0051D5;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+        }
+
+        .button.secondary {
+            background: #6c757d;
+        }
+
+        .button.secondary:hover {
+            background: #5a6268;
+        }
+
+        .status {
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .link {
+            color: #007AFF;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .link:hover {
+            text-decoration: underline;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            color: #666;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .tab:hover {
+            color: #007AFF;
+        }
+
+        .tab.active {
+            color: #007AFF;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #007AFF;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #007AFF, #5AC8FA);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .troubleshooting {
+            background: #ffebee;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .troubleshooting h3 {
+            color: #c62828;
+            margin-bottom: 15px;
+        }
+
+        .troubleshooting-item {
+            margin-bottom: 15px;
+            padding-left: 20px;
+        }
+
+        .troubleshooting-item strong {
+            color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 GooseFilms Firebase Setup Guide</h1>
+        <p class="subtitle">Set up real-time movie scheduling with Firebase - No more manual file uploads!</p>
+        
+        <div style="background: linear-gradient(135deg, #34C759, #30D158); padding: 20px; border-radius: 15px; margin: 20px 0; color: white;">
+            <h3 style="margin-bottom: 10px;">🎉 What's New with Firebase Integration</h3>
+            <ul style="list-style: none; padding: 0;">
+                <li>✅ <strong>Real-time Sync:</strong> Changes appear instantly on all devices</li>
+                <li>✅ <strong>No Manual Commits:</strong> Say goodbye to git commands and file uploads</li>
+                <li>✅ <strong>Simple Codeword:</strong> Just one password to remember - no usernames or emails</li>
+                <li>✅ <strong>Always Up-to-Date:</strong> Your website always shows the latest schedule</li>
+                <li>✅ <strong>Multi-Device:</strong> Schedule from any device, anywhere</li>
+            </ul>
+        </div>
+        
+        <div id="status" class="status"></div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar"></div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('setup')">Setup Guide</button>
+            <button class="tab" onclick="switchTab('test')">Test & Validate</button>
+            <button class="tab" onclick="switchTab('troubleshoot')">Troubleshooting</button>
+        </div>
+
+        <div id="setup" class="tab-content active">
+            <div class="checklist">
+                <h3>📋 Quick Setup Checklist</h3>
+                <div class="checklist-item">
+                    <input type="checkbox" id="check1" onchange="updateProgress()">
+                    <label for="check1">Created Firebase Project</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="check2" onchange="updateProgress()">
+                    <label for="check2">Understood custom auth (no Firebase Auth needed)</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="check3" onchange="updateProgress()">
+                    <label for="check3">Created Firestore Database</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="check4" onchange="updateProgress()">
+                    <label for="check4">Updated Security Rules</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="check5" onchange="updateProgress()">
+                    <label for="check5">Added Firebase Config to config.js</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="check6" onchange="updateProgress()">
+                    <label for="check6">Created Admin User</label>
+                </div>
+            </div>
+        
+            <h2>🔥 Firebase Setup Steps</h2>
+            
+            <div class="step" id="step1">
+                <h3><span class="step-number">1</span> Create a Firebase Project</h3>
+                <ol>
+                    <li>Open <a href="https://console.firebase.google.com" target="_blank" class="link">Firebase Console</a> in a new tab</li>
+                    <li>Click the "Create Project" or "Add Project" button</li>
+                    <li>Enter project name: <code>GooseFilms</code> (or your preferred name)</li>
+                    <li><strong>Disable Google Analytics</strong> when prompted (not needed for this project)</li>
+                    <li>Click "Create Project" and wait for it to complete (~30 seconds)</li>
+                </ol>
+                
+                <div class="tip">
+                    <span>💡</span>
+                    <div>
+                        <strong>Tip:</strong> Keep the Firebase Console tab open - you'll need it for the next steps!
+                    </div>
+                </div>
+                
+                <div class="screenshot">Screenshot: Firebase project creation page with "GooseFilms" entered as project name</div>
+            </div>
+
+            <div class="step" id="step2">
+                <h3><span class="step-number">2</span> Configure Firestore (Skip Authentication)</h3>
+                <p>We're using a custom authentication system with Firestore, so you can <strong>skip Firebase Authentication entirely</strong>.</p>
+                
+                <div class="tip">
+                    <span>💡</span>
+                    <div>
+                        <strong>Note:</strong> We store user credentials directly in Firestore with hashed passwords. No email addresses are used!
+                    </div>
+                </div>
+                
+                <div class="warning">
+                    <span>⚠️</span>
+                    <div>
+                        <strong>Important:</strong> You do NOT need to enable Firebase Authentication. We only use Firestore Database.
+                    </div>
+                </div>
+            </div>
+
+            <div class="step" id="step3">
+                <h3><span class="step-number">3</span> Create Firestore Database</h3>
+                <ol>
+                    <li>Click <strong>"Firestore Database"</strong> in the left sidebar</li>
+                    <li>Click <strong>"Create Database"</strong> button</li>
+                    <li>Choose <strong>"Start in production mode"</strong> (we'll add proper rules next)</li>
+                    <li>Click "Next"</li>
+                    <li>Select your region:
+                        <ul>
+                            <li>US: <code>us-central1</code> or <code>us-east1</code></li>
+                            <li>Europe: <code>europe-west1</code></li>
+                            <li>Asia: <code>asia-southeast1</code></li>
+                        </ul>
+                    </li>
+                    <li>Click <strong>"Enable"</strong> and wait for database creation</li>
+                </ol>
+                
+                <div class="tip">
+                    <span>💡</span>
+                    <div>
+                        <strong>Tip:</strong> Choose the region closest to your users for best performance. This cannot be changed later!
+                    </div>
+                </div>
+            </div>
+            
+            <div class="step" id="step4">
+                <h3><span class="step-number">4</span> Configure Security Rules</h3>
+                <p>After Firestore is created:</p>
+                <ol>
+                    <li>Click on the <strong>"Rules"</strong> tab in Firestore</li>
+                    <li>Delete all existing rules</li>
+                    <li>Copy and paste these rules:</li>
+                </ol>
+            <pre>rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Public read for schedules, write requires being logged in
+    match /schedules/{document} {
+      allow read: if true;
+      allow write: if true; // In production, add session validation
+    }
+    // Users collection - allow creation and read for login
+    match /users/{userId} {
+      allow read: if true; // Needed for login verification
+      allow create: if true; // Allow user creation
+      allow update, delete: if false; // Prevent modifications
+    }
+  }
+}</pre>
+                <button class="button secondary" onclick="copyToClipboard(this.previousElementSibling.textContent)">Copy Rules</button>
+                
+                <div class="warning">
+                    <span>⚠️</span>
+                    <div>
+                        <strong>Important:</strong> Click "Publish" after pasting the rules to save them!
+                    </div>
+                </div>
+            </div>
+
+            <div class="step" id="step5">
+                <h3><span class="step-number">5</span> Get Your Firebase Configuration</h3>
+                <ol>
+                    <li>Click the <strong>gear icon ⚙️</strong> next to "Project Overview"</li>
+                    <li>Select <strong>"Project settings"</strong></li>
+                    <li>Scroll down to <strong>"Your apps"</strong> section</li>
+                    <li>Click the <strong>"Web" icon</strong> (looks like <code>&lt;/&gt;</code>)</li>
+                    <li>Register your app:
+                        <ul>
+                            <li>App nickname: <code>GooseFilms Web</code></li>
+                            <li>Leave "Firebase Hosting" unchecked</li>
+                            <li>Click "Register app"</li>
+                        </ul>
+                    </li>
+                    <li>You'll see a code block with <code>firebaseConfig</code> - copy the configuration object</li>
+                    <li>Open your <code>config.js</code> file and replace the placeholder values:</li>
+                </ol>
+            <pre>FIREBASE_CONFIG: {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID"
+}</pre>
+                
+                <div class="tip">
+                    <span>💡</span>
+                    <div>
+                        <strong>Tip:</strong> The configuration values will look like: <code>apiKey: "AIzaSyD..."</code>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step" id="step6">
+                <h3><span class="step-number">6</span> Final Setup</h3>
+                <p>After updating your config.js file:</p>
+                <ol>
+                    <li>Save the config.js file</li>
+                    <li>Refresh this page to load the new configuration</li>
+                    <li>Use the buttons below to complete setup</li>
+                </ol>
+                
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px;">
+                    <button class="button" onclick="testFirebase()">🔗 Test Firebase Connection</button>
+                    <button class="button secondary" onclick="createAdminUser()">👤 Create Admin User</button>
+                    <button class="button secondary" onclick="migrateData()">📦 Migrate Existing Data</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="test" class="tab-content">
+            <h2>🧪 Test & Validate</h2>
+            
+            <div class="step">
+                <h3>Connection Test</h3>
+                <p>Test your Firebase configuration and connection:</p>
+                <button class="button" onclick="testFirebase()">Run Connection Test</button>
+                
+                <div style="margin-top: 20px;">
+                    <h4>What this tests:</h4>
+                    <ul>
+                        <li>✓ Firebase configuration is valid</li>
+                        <li>✓ Can connect to Firestore</li>
+                        <li>✓ Security rules are properly set</li>
+                        <li>✓ Database is accessible</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="step">
+                <h3>Create Test User</h3>
+                <p>Create your admin user account:</p>
+                <button class="button" onclick="createAdminUser()">Create Admin User</button>
+                
+                <div class="tip">
+                    <span>💡</span>
+                    <div>
+                        <strong>Note:</strong> Use a simple username like "admin" (no email needed!) and a secure password you'll remember.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="step">
+                <h3>Data Migration</h3>
+                <p>If you have existing movie schedules in local storage, migrate them to Firebase:</p>
+                <button class="button secondary" onclick="migrateData()">Migrate Local Data</button>
+                
+                <div class="warning">
+                    <span>⚠️</span>
+                    <div>
+                        <strong>Note:</strong> This will copy your local schedules to Firebase. Run only once!
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="troubleshoot" class="tab-content">
+            <h2>🔧 Troubleshooting</h2>
+            
+            <div class="troubleshooting">
+                <h3>Common Issues & Solutions</h3>
+                
+                <div class="troubleshooting-item">
+                    <strong>Firebase not configured error:</strong>
+                    <ul>
+                        <li>Make sure you updated config.js with your Firebase configuration</li>
+                        <li>Check that you replaced ALL placeholder values (YOUR_API_KEY, etc.)</li>
+                        <li>Refresh this page after updating config.js</li>
+                    </ul>
+                </div>
+                
+                <div class="troubleshooting-item">
+                    <strong>Permission denied errors:</strong>
+                    <ul>
+                        <li>Verify you copied and published the security rules correctly</li>
+                        <li>Make sure you're logged in as an admin user</li>
+                        <li>Check that Authentication is enabled in Firebase Console</li>
+                    </ul>
+                </div>
+                
+                <div class="troubleshooting-item">
+                    <strong>Can't create admin user:</strong>
+                    <ul>
+                        <li>Ensure Firestore Database is enabled</li>
+                        <li>Check for existing user with same username</li>
+                        <li>Try a different username if "admin" is taken</li>
+                        <li>Password must be at least 6 characters</li>
+                        <li>Make sure security rules allow write to users collection</li>
+                    </ul>
+                </div>
+                
+                <div class="troubleshooting-item">
+                    <strong>Login not working:</strong>
+                    <ul>
+                        <li>Use the username you created (NOT an email address)</li>
+                        <li>Check password is correct (case-sensitive)</li>
+                        <li>Ensure you created the user through this setup page</li>
+                        <li>If Firebase fails, try local login: admin/goosefilms2024!</li>
+                    </ul>
+                </div>
+                
+                <div class="troubleshooting-item">
+                    <strong>Data not syncing:</strong>
+                    <ul>
+                        <li>Check internet connection</li>
+                        <li>Verify Firestore is enabled in Firebase Console</li>
+                        <li>Look for errors in browser console (F12)</li>
+                        <li>Ensure you're logged in as admin</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="step">
+                <h3>Need More Help?</h3>
+                <p>Check the browser console for detailed error messages:</p>
+                <ol>
+                    <li>Press <code>F12</code> to open Developer Tools</li>
+                    <li>Go to the "Console" tab</li>
+                    <li>Look for red error messages</li>
+                    <li>Copy any Firebase-related errors</li>
+                </ol>
+                
+                <p>Common console errors and fixes:</p>
+                <ul>
+                    <li><code>invalid-api-key</code> - Your API key in config.js is incorrect</li>
+                    <li><code>permission-denied</code> - Security rules need updating</li>
+                    <li><code>Failed to get document</code> - Firestore not enabled or network issue</li>
+                    <li><code>Invalid codeword</code> - Check the codeword in js/simpleAuth.js</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="back-link">
+            <a href="admin.html" class="link">← Back to Admin Panel</a>
+        </div>
+    </div>
+
+    <!-- Firebase SDK (Firestore only) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Local Scripts -->
+    <script src="config.js"></script>
+    <script src="js/firebase.js"></script>
+    <script src="js/firebaseAuth.js"></script>
+    <script src="js/firebaseDatabase.js"></script>
+    
+    <script>
+        // Tab switching
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        // Progress bar update
+        function updateProgress() {
+            const checkboxes = document.querySelectorAll('.checklist input[type="checkbox"]');
+            const checked = document.querySelectorAll('.checklist input[type="checkbox"]:checked');
+            const percentage = (checked.length / checkboxes.length) * 100;
+            
+            document.getElementById('progressBar').style.width = percentage + '%';
+            
+            // Mark steps as completed
+            if (document.getElementById('check1').checked) {
+                document.getElementById('step1')?.classList.add('completed');
+            }
+            if (document.getElementById('check2').checked) {
+                document.getElementById('step2')?.classList.add('completed');
+            }
+            if (document.getElementById('check3').checked) {
+                document.getElementById('step3')?.classList.add('completed');
+            }
+            if (document.getElementById('check4').checked) {
+                document.getElementById('step4')?.classList.add('completed');
+            }
+            if (document.getElementById('check5').checked) {
+                document.getElementById('step5')?.classList.add('completed');
+            }
+            if (document.getElementById('check6').checked) {
+                document.getElementById('step6')?.classList.add('completed');
+            }
+            
+            // Save progress to localStorage
+            const progress = {
+                check1: document.getElementById('check1').checked,
+                check2: document.getElementById('check2').checked,
+                check3: document.getElementById('check3').checked,
+                check4: document.getElementById('check4').checked,
+                check5: document.getElementById('check5').checked,
+                check6: document.getElementById('check6').checked,
+            };
+            localStorage.setItem('firebaseSetupProgress', JSON.stringify(progress));
+        }
+
+        // Load saved progress
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedProgress = localStorage.getItem('firebaseSetupProgress');
+            if (savedProgress) {
+                const progress = JSON.parse(savedProgress);
+                Object.keys(progress).forEach(key => {
+                    if (progress[key]) {
+                        document.getElementById(key).checked = true;
+                    }
+                });
+                updateProgress();
+            }
+        });
+
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.className = `status ${type}`;
+            status.textContent = message;
+            status.style.display = 'block';
+            
+            // Auto-hide after 5 seconds for success messages
+            if (type === 'success') {
+                setTimeout(() => {
+                    status.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showStatus('✅ Copied to clipboard!', 'success');
+            }).catch(() => {
+                showStatus('Failed to copy. Please select and copy manually.', 'error');
+            });
+        }
+
+        async function testFirebase() {
+            showStatus('🔄 Testing Firebase connection...', 'info');
+            
+            if (!window.firebaseUtils || !window.firebaseUtils.isFirebaseConfigured()) {
+                showStatus('❌ Firebase is not configured. Please update config.js with your Firebase configuration.', 'error');
+                return;
+            }
+            
+            try {
+                const db = window.firebaseUtils.getFirestore();
+                
+                // Test Firestore connection
+                await db.collection('schedules').limit(1).get();
+                
+                // Test if we can read users collection
+                await db.collection('users').limit(1).get();
+                
+                showStatus('✅ Firebase connection successful! Firestore is ready. You can now create an admin user.', 'success');
+                
+                // Update checklist
+                document.getElementById('check5').checked = true;
+                updateProgress();
+            } catch (error) {
+                showStatus('❌ Firebase connection failed: ' + error.message, 'error');
+                console.error('Firebase test error:', error);
+            }
+        }
+
+        async function migrateData() {
+            showStatus('🔄 Starting data migration...', 'info');
+            
+            if (!window.firebaseDatabase || !window.firebaseDatabase.isAvailable()) {
+                showStatus('❌ Firebase is not available. Please configure Firebase first.', 'error');
+                return;
+            }
+            
+            try {
+                // Check for local data first
+                const localData = localStorage.getItem('movie_schedules');
+                if (!localData) {
+                    showStatus('ℹ️ No local data found to migrate.', 'info');
+                    return;
+                }
+                
+                const schedules = JSON.parse(localData);
+                const scheduleCount = Object.keys(schedules).length;
+                
+                if (scheduleCount === 0) {
+                    showStatus('ℹ️ No schedules found in local storage.', 'info');
+                    return;
+                }
+                
+                showStatus(`🔄 Migrating ${scheduleCount} scheduled dates...`, 'info');
+                
+                const migrated = await window.firebaseDatabase.migrateFromLocalStorage();
+                if (migrated) {
+                    showStatus(`✅ Successfully migrated ${scheduleCount} scheduled dates to Firebase!`, 'success');
+                } else {
+                    showStatus('❌ Migration failed. Check console for details.', 'error');
+                }
+            } catch (error) {
+                showStatus('❌ Migration error: ' + error.message, 'error');
+                console.error('Migration error:', error);
+            }
+        }
+
+        async function checkSchedules() {
+            showStatus('🔄 Checking for existing schedules in Firebase...', 'info');
+            
+            if (!window.firebaseUtils || !window.firebaseUtils.isFirebaseConfigured()) {
+                showStatus('❌ Firebase is not configured. Please complete setup first.', 'error');
+                return;
+            }
+            
+            try {
+                const db = window.firebaseUtils.getFirestore();
+                const schedulesDoc = await db.collection('schedules').doc('movieSchedules').get();
+                
+                if (schedulesDoc.exists) {
+                    const data = schedulesDoc.data();
+                    const schedules = data.schedules || {};
+                    const dateCount = Object.keys(schedules).length;
+                    
+                    if (dateCount > 0) {
+                        let movieCount = 0;
+                        Object.values(schedules).forEach(daySchedules => {
+                            movieCount += daySchedules.length;
+                        });
+                        
+                        showStatus(`✅ Found ${movieCount} movies scheduled across ${dateCount} dates in Firebase!`, 'success');
+                    } else {
+                        showStatus('ℹ️ No schedules found yet. Start scheduling movies in the admin panel!', 'info');
+                    }
+                } else {
+                    showStatus('ℹ️ No schedules database found. It will be created when you schedule your first movie.', 'info');
+                }
+            } catch (error) {
+                showStatus('❌ Error checking schedules: ' + error.message, 'error');
+                console.error('Check schedules error:', error);
+            }
+        }
+    </script>
+</body>
+</html>

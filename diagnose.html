@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GooseFilms Diagnostic Tool</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #f5f5f5;
+        }
+        .diagnostic-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status-ok { color: #34C759; }
+        .status-error { color: #FF3B30; }
+        .status-warning { color: #FF9500; }
+        button {
+            background: #007AFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 16px;
+        }
+        button:hover { background: #0051D5; }
+        .code-block {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 4px solid #007AFF;
+            background: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎬 GooseFilms Diagnostic Tool</h1>
+    
+    <div class="diagnostic-card">
+        <h2>📁 File Structure Check</h2>
+        <div id="fileCheck"></div>
+    </div>
+    
+    <div class="diagnostic-card">
+        <h2>🔧 Script Loading Status</h2>
+        <div id="scriptStatus"></div>
+    </div>
+    
+    <div class="diagnostic-card">
+        <h2>🔐 Authentication System</h2>
+        <div id="authStatus"></div>
+        <button onclick="testLogin()">Test Login (goosefilms2024)</button>
+        <button onclick="testWrongLogin()">Test Wrong Password</button>
+        <button onclick="checkSession()">Check Current Session</button>
+        <button onclick="clearSession()">Clear Session</button>
+    </div>
+    
+    <div class="diagnostic-card">
+        <h2>🌐 Navigation Tests</h2>
+        <button onclick="goTo('index.html')">Go to Home</button>
+        <button onclick="goTo('login.html')">Go to Login</button>
+        <button onclick="goTo('admin.html')">Go to Admin (Protected)</button>
+        <button onclick="goTo('test-login.html')">Go to Test Login</button>
+    </div>
+    
+    <div class="diagnostic-card">
+        <h2>💾 Local Storage Inspector</h2>
+        <div id="storageInspector"></div>
+        <button onclick="inspectStorage()">Refresh Storage View</button>
+    </div>
+    
+    <div class="diagnostic-card">
+        <h2>🐛 Console Output</h2>
+        <div class="code-block" id="consoleOutput" style="min-height: 100px;">
+            Console messages will appear here...
+        </div>
+    </div>
+
+    <script src="js/simpleAuth.js"></script>
+    <script>
+        // Console capture
+        const consoleDiv = document.getElementById('consoleOutput');
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+        
+        function addToConsole(type, message) {
+            const time = new Date().toLocaleTimeString();
+            const color = type === 'error' ? '#FF3B30' : type === 'warn' ? '#FF9500' : '#000';
+            consoleDiv.innerHTML += `<div style="color: ${color}">[${time}] ${type.toUpperCase()}: ${message}</div>`;
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        }
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            addToConsole('log', args.join(' '));
+        };
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            addToConsole('error', args.join(' '));
+        };
+        console.warn = function(...args) {
+            originalWarn.apply(console, args);
+            addToConsole('warn', args.join(' '));
+        };
+        
+        // File check
+        function checkFiles() {
+            const div = document.getElementById('fileCheck');
+            const files = [
+                'js/simpleAuth.js',
+                'login.html',
+                'admin.html',
+                'index.html',
+                'config.js'
+            ];
+            
+            div.innerHTML = '<p>Checking critical files...</p>';
+            
+            // We can't actually check file existence from browser, but we can check script loading
+            div.innerHTML = `
+                <div class="test-result">
+                    <strong>Current Page:</strong> ${window.location.pathname}<br>
+                    <strong>Base URL:</strong> ${window.location.origin}<br>
+                    <strong>Full URL:</strong> ${window.location.href}
+                </div>
+            `;
+        }
+        
+        // Script status
+        function checkScripts() {
+            const div = document.getElementById('scriptStatus');
+            const scripts = {
+                'simpleAuth': window.simpleAuth,
+                'localStorage': typeof(Storage) !== "undefined",
+                'sessionStorage': typeof(sessionStorage) !== "undefined"
+            };
+            
+            let html = '';
+            for (const [name, loaded] of Object.entries(scripts)) {
+                const status = loaded ? '<span class="status-ok">✓ Loaded</span>' : '<span class="status-error">✗ Not Loaded</span>';
+                html += `<div class="test-result">${name}: ${status}</div>`;
+            }
+            
+            // Check simpleAuth methods
+            if (window.simpleAuth) {
+                html += '<div class="test-result"><strong>simpleAuth methods:</strong><br>';
+                const methods = ['login', 'logout', 'isAuthenticated', 'getSessionInfo'];
+                methods.forEach(method => {
+                    const exists = typeof window.simpleAuth[method] === 'function';
+                    html += `${method}: ${exists ? '<span class="status-ok">✓</span>' : '<span class="status-error">✗</span>'}<br>`;
+                });
+                html += '</div>';
+            }
+            
+            div.innerHTML = html;
+        }
+        
+        // Auth status
+        function updateAuthStatus() {
+            const div = document.getElementById('authStatus');
+            
+            if (!window.simpleAuth) {
+                div.innerHTML = '<div class="test-result status-error">simpleAuth not loaded!</div>';
+                return;
+            }
+            
+            const isAuth = window.simpleAuth.isAuthenticated();
+            const sessionInfo = window.simpleAuth.getSessionInfo();
+            
+            let html = `<div class="test-result">`;
+            html += `<strong>Authenticated:</strong> ${isAuth ? '<span class="status-ok">Yes</span>' : '<span class="status-error">No</span>'}<br>`;
+            
+            if (sessionInfo) {
+                html += `<strong>Login Time:</strong> ${sessionInfo.loginTime}<br>`;
+                html += `<strong>Expires At:</strong> ${sessionInfo.expiresAt}<br>`;
+                html += `<strong>Time Remaining:</strong> ${sessionInfo.remainingMinutes} minutes<br>`;
+            }
+            
+            html += `<strong>Codeword:</strong> <code>goosefilms2024</code> (for testing)<br>`;
+            html += `</div>`;
+            
+            div.innerHTML = html;
+        }
+        
+        // Test functions
+        function testLogin() {
+            console.log('Testing login with correct password...');
+            const result = window.simpleAuth.login('goosefilms2024');
+            if (result.success) {
+                console.log('Login successful!');
+                alert('✅ Login successful! You can now access admin.html');
+            } else {
+                console.error('Login failed:', result.error);
+                alert('❌ Login failed: ' + result.error);
+            }
+            updateAuthStatus();
+            inspectStorage();
+        }
+        
+        function testWrongLogin() {
+            console.log('Testing login with wrong password...');
+            const result = window.simpleAuth.login('wrongpassword');
+            if (!result.success) {
+                console.log('Login correctly rejected');
+                alert('✅ Login correctly rejected with wrong password');
+            }
+            updateAuthStatus();
+        }
+        
+        function checkSession() {
+            console.log('Checking session...');
+            updateAuthStatus();
+        }
+        
+        function clearSession() {
+            console.log('Clearing session...');
+            window.simpleAuth.logout();
+            alert('✅ Session cleared');
+            updateAuthStatus();
+            inspectStorage();
+        }
+        
+        // Navigation
+        function goTo(page) {
+            console.log('Navigating to:', page);
+            window.location.href = page;
+        }
+        
+        // Storage inspector
+        function inspectStorage() {
+            const div = document.getElementById('storageInspector');
+            let html = '<div class="test-result">';
+            
+            // Show all localStorage keys
+            html += '<strong>localStorage contents:</strong><br>';
+            if (localStorage.length === 0) {
+                html += '<em>Empty</em><br>';
+            } else {
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    const value = localStorage.getItem(key);
+                    html += `<code>${key}</code>: `;
+                    
+                    // Try to parse JSON
+                    try {
+                        const parsed = JSON.parse(value);
+                        html += `<pre style="margin: 5px 0;">${JSON.stringify(parsed, null, 2)}</pre>`;
+                    } catch {
+                        html += `${value.substring(0, 100)}${value.length > 100 ? '...' : ''}<br>`;
+                    }
+                }
+            }
+            
+            html += '</div>';
+            div.innerHTML = html;
+        }
+        
+        // Initialize
+        window.addEventListener('DOMContentLoaded', function() {
+            console.log('Diagnostic tool loaded');
+            checkFiles();
+            checkScripts();
+            updateAuthStatus();
+            inspectStorage();
+            
+            // Test form submission
+            console.log('Creating test form...');
+            const testForm = document.createElement('form');
+            testForm.innerHTML = '<input type="text" value="test"><button type="submit">Test Submit</button>';
+            testForm.style.display = 'none';
+            testForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                console.log('Test form submitted successfully!');
+            });
+            document.body.appendChild(testForm);
+            
+            // Trigger submit programmatically
+            setTimeout(() => {
+                const submitBtn = testForm.querySelector('button');
+                submitBtn.click();
+            }, 100);
+        });
+        
+        // Periodic updates
+        setInterval(() => {
+            const isAuth = window.simpleAuth && window.simpleAuth.isAuthenticated();
+            document.title = `Diagnostic ${isAuth ? '(Authenticated)' : '(Not Authenticated)'}`;
+        }, 1000);
+    </script>
+</body>
+</html>

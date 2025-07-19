@@ -3,184 +3,485 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineClub Admin - Login</title>
+    <title>GooseFilms Admin - Access</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;600;700&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        :root {
+            --cinema-purple: #6B46C1;
+            --cinema-gold: #F59E0B;
+            --cinema-red: #DC2626;
+            --cinema-dark: #1F2937;
+            --cinema-darker: #111827;
+            --cinema-light: #F3F4F6;
+            --neon-glow: 0 0 20px rgba(245, 158, 11, 0.8);
+            --success-green: #10B981;
+        }
+
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Poppins', sans-serif;
+            background: var(--cinema-darker);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #333;
+            color: var(--cinema-light);
+            overflow: hidden;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(107, 70, 193, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(245, 158, 11, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Floating elements */
+        .floating-element {
+            position: fixed;
+            font-size: 2rem;
+            animation: float 4s ease-in-out infinite;
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(10deg); }
         }
 
         .login-container {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, rgba(107, 70, 193, 0.1), rgba(31, 41, 55, 0.9));
             backdrop-filter: blur(10px);
-            width: 400px;
+            padding: 3rem;
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border: 2px solid var(--cinema-gold);
+            width: 90%;
+            max-width: 450px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(245, 158, 11, 0.1),
+                transparent
+            );
+            transform: rotate(45deg);
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
         }
 
         .login-header {
-            margin-bottom: 30px;
+            margin-bottom: 2.5rem;
+            position: relative;
+            z-index: 2;
         }
 
         .login-header h1 {
-            color: #2c3e50;
-            margin-bottom: 10px;
+            font-family: 'Bebas Neue', cursive;
+            font-size: 3.5rem;
+            color: var(--cinema-gold);
+            text-shadow: var(--neon-glow);
+            letter-spacing: 4px;
+            margin-bottom: 0.5rem;
         }
 
         .login-header p {
-            color: #7f8c8d;
+            color: var(--cinema-purple);
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .access-icon {
+            font-size: 5rem;
+            margin-bottom: 2rem;
+            filter: drop-shadow(0 0 20px rgba(245, 158, 11, 0.5));
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
         }
 
         .form-group {
-            margin-bottom: 20px;
-            text-align: left;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 2;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #34495e;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            color: var(--cinema-gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
         }
 
         .form-group input {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s ease;
+            padding: 1rem 1.5rem;
+            background: rgba(31, 41, 55, 0.8);
+            border: 2px solid var(--cinema-purple);
+            border-radius: 50px;
+            font-size: 1.1rem;
+            color: var(--cinema-light);
+            text-align: center;
+            transition: all 0.3s ease;
+            letter-spacing: 2px;
         }
 
         .form-group input:focus {
             outline: none;
-            border-color: #3498db;
+            border-color: var(--cinema-gold);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+            transform: scale(1.02);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(243, 244, 246, 0.5);
+            letter-spacing: 1px;
         }
 
         .login-btn {
             width: 100%;
-            background: linear-gradient(45deg, #3498db, #2980b9);
-            color: white;
+            background: var(--cinema-gold);
+            color: var(--cinema-dark);
             border: none;
-            padding: 15px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
+            padding: 1.2rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
             cursor: pointer;
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+            z-index: 2;
+        }
+
+        .login-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .login-btn:hover::before {
+            left: 100%;
         }
 
         .login-btn:hover {
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.5);
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: 15px;
+            margin-top: 1.5rem;
+            display: none;
+            font-weight: 500;
+            position: relative;
+            z-index: 2;
         }
 
         .error-message {
-            background: #e74c3c;
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            margin-top: 15px;
-            display: none;
+            background: rgba(220, 38, 38, 0.2);
+            border: 2px solid var(--cinema-red);
+            color: var(--cinema-red);
+        }
+
+        .success-message {
+            background: rgba(16, 185, 129, 0.2);
+            border: 2px solid var(--success-green);
+            color: var(--success-green);
+        }
+
+        .hint {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(107, 70, 193, 0.2);
+            border-radius: 15px;
+            border: 1px solid var(--cinema-purple);
+            font-size: 0.85rem;
+            color: var(--cinema-light);
+            opacity: 0.8;
+            position: relative;
+            z-index: 2;
         }
 
         .back-link {
-            margin-top: 20px;
+            margin-top: 2rem;
+            position: relative;
+            z-index: 2;
         }
 
         .back-link a {
-            color: #3498db;
+            color: var(--cinema-gold);
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
         }
 
         .back-link a:hover {
-            text-decoration: underline;
-        }
-
-        .demo-credentials {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            color: #666;
+            text-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
         }
     </style>
 </head>
 <body>
+    <!-- Floating decorations -->
+    <div class="floating-element" style="top: 10%; left: 5%; animation-delay: 0s;">🍿</div>
+    <div class="floating-element" style="top: 20%; right: 10%; animation-delay: 1s;">🎬</div>
+    <div class="floating-element" style="bottom: 30%; left: 8%; animation-delay: 2s;">🎭</div>
+    <div class="floating-element" style="bottom: 10%; right: 5%; animation-delay: 3s;">🎪</div>
+
     <div class="login-container">
         <div class="login-header">
-            <h1>🎬 CineClub Admin</h1>
-            <p>Enter your credentials to access the admin panel</p>
-        </div>
-
-        <div class="demo-credentials">
-            <strong>Demo Credentials:</strong><br>
-            Username: admin<br>
-            Password: admin123
+            <div class="access-icon">🔐</div>
+            <h1>GOOSEFILMS</h1>
+            <p>Admin Access</p>
         </div>
 
         <form id="loginForm">
             <div class="form-group">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
+                <label for="codeword">Enter Codeword</label>
+                <input 
+                    type="password" 
+                    id="codeword" 
+                    name="codeword" 
+                    placeholder="••••••••••••••"
+                    required
+                    autocomplete="off"
+                >
             </div>
 
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-
-            <button type="submit" class="login-btn">Login to Admin Panel</button>
+            <button type="submit" class="login-btn">
+                🎬 ACCESS ADMIN PANEL
+            </button>
             
-            <div class="error-message" id="errorMessage">
-                Invalid username or password. Please try again.
+            <div class="error-message message" id="errorMessage">
+                ❌ Invalid codeword. Access denied.
+            </div>
+
+            <div class="success-message message" id="successMessage">
+                ✅ Access granted! Redirecting...
             </div>
         </form>
 
+        <div class="hint">
+            💡 <strong>Hint:</strong> The codeword is the name of our club + the current year
+        </div>
+
         <div class="back-link">
-            <a href="index.html">← Back to Main Site</a>
+            <a href="index.html">← Back to Movies</a>
         </div>
     </div>
 
-    <script src="config.js"></script>
+    <!-- Simple Auth Script -->
+    <script src="js/simpleAuth.js" onerror="console.error('Failed to load simpleAuth.js')"></script>
     <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        // Debug function
+        function debugLog(message) {
+            console.log('[Login Debug]', message);
+        }
+        
+        // Fallback authentication if simpleAuth.js fails to load
+        if (!window.simpleAuth) {
+            debugLog('Creating fallback authentication');
+            window.simpleAuth = {
+                CODEWORD: 'goosefilms2024',
+                SESSION_KEY: 'goosefilms_admin_session',
+                SESSION_DURATION: 24 * 60 * 60 * 1000,
+                
+                login: function(codeword) {
+                    if (codeword.toLowerCase() === this.CODEWORD.toLowerCase()) {
+                        const sessionData = {
+                            authenticated: true,
+                            loginTime: new Date().getTime(),
+                            expiresAt: new Date().getTime() + this.SESSION_DURATION
+                        };
+                        localStorage.setItem(this.SESSION_KEY, JSON.stringify(sessionData));
+                        return { success: true };
+                    } else {
+                        return { success: false, error: 'Invalid codeword' };
+                    }
+                },
+                
+                isAuthenticated: function() {
+                    const session = localStorage.getItem(this.SESSION_KEY);
+                    if (!session) return false;
+                    try {
+                        const sessionData = JSON.parse(session);
+                        const now = new Date().getTime();
+                        if (now > sessionData.expiresAt) {
+                            this.logout();
+                            return false;
+                        }
+                        return sessionData.authenticated === true;
+                    } catch (e) {
+                        return false;
+                    }
+                },
+                
+                logout: function() {
+                    localStorage.removeItem(this.SESSION_KEY);
+                }
+            };
+        }
+        
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            debugLog('DOM loaded');
             
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+            // Add a simple test button to verify form functionality
+            const testBtn = document.createElement('button');
+            testBtn.textContent = 'Test Direct Login';
+            testBtn.style.cssText = 'position: fixed; top: 10px; right: 10px; padding: 10px; background: #007AFF; color: white; border: none; border-radius: 5px; cursor: pointer; z-index: 9999;';
+            testBtn.onclick = function() {
+                const codeword = prompt('Enter codeword:', 'goosefilms2024');
+                if (codeword && window.simpleAuth) {
+                    const result = window.simpleAuth.login(codeword);
+                    if (result.success) {
+                        alert('Login successful! Redirecting...');
+                        window.location.replace('./admin.html');
+                    } else {
+                        alert('Login failed: ' + result.error);
+                    }
+                } else {
+                    alert('simpleAuth not loaded or no codeword entered');
+                }
+            };
+            document.body.appendChild(testBtn);
+            
+            // Check if simpleAuth is available
+            if (!window.simpleAuth) {
+                console.error('SimpleAuth not loaded! Check if js/simpleAuth.js exists');
+                alert('Authentication system not loaded. Please check console for errors.');
+                return;
+            }
+            
+            debugLog('SimpleAuth loaded successfully');
+            
+            const loginForm = document.getElementById('loginForm');
+            const codewordInput = document.getElementById('codeword');
             const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
             
-            // Simple authentication (in production, use proper authentication)
-            if (username === CONFIG.ADMIN.username && password === CONFIG.ADMIN.password) {
-                localStorage.setItem('adminLoggedIn', 'true');
-                window.location.href = 'admin.html';
-            } else {
-                errorMessage.style.display = 'block';
-                setTimeout(() => {
-                    errorMessage.style.display = 'none';
-                }, 3000);
+            // Check if form exists
+            if (!loginForm) {
+                console.error('Login form not found!');
+                return;
+            }
+            
+            // Add submit event listener
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                debugLog('Form submitted');
+                
+                const codeword = codewordInput.value;
+                debugLog('Codeword entered: ' + (codeword ? 'Yes' : 'No'));
+                
+                // Hide any existing messages
+                errorMessage.style.display = 'none';
+                successMessage.style.display = 'none';
+                
+                try {
+                    // Try to login with the codeword
+                    const result = window.simpleAuth.login(codeword);
+                    debugLog('Login result: ' + JSON.stringify(result));
+                    
+                    if (result.success) {
+                        // Show success message
+                        successMessage.style.display = 'block';
+                        debugLog('Login successful, redirecting...');
+                        
+                        // Redirect immediately
+                        window.location.replace('./admin.html');
+                    } else {
+                        // Show error message
+                        errorMessage.style.display = 'block';
+                        debugLog('Login failed: ' + result.error);
+                        
+                        // Clear the input
+                        codewordInput.value = '';
+                        
+                        // Hide error after 3 seconds
+                        setTimeout(() => {
+                            errorMessage.style.display = 'none';
+                        }, 3000);
+                    }
+                } catch (error) {
+                    console.error('Login error:', error);
+                    errorMessage.textContent = 'Login error: ' + error.message;
+                    errorMessage.style.display = 'block';
+                }
+            });
+            
+            // Focus on input
+            if (codewordInput) {
+                codewordInput.focus();
+            }
+            
+            // Add click handler to button as backup
+            const submitButton = loginForm.querySelector('button[type="submit"]');
+            if (submitButton) {
+                submitButton.addEventListener('click', function(e) {
+                    debugLog('Button clicked directly');
+                    // Form submit will handle this
+                });
             }
         });
-
-        // Check if already logged in
-        if (localStorage.getItem('adminLoggedIn')) {
-            window.location.href = 'admin.html';
-        }
+        
+        // Also add load event as backup
+        window.addEventListener('load', function() {
+            debugLog('Window loaded');
+            // Check if everything is ready
+            if (!window.simpleAuth) {
+                console.error('SimpleAuth still not available after window load!');
+            }
+        });
     </script>
 </body>
 </html>

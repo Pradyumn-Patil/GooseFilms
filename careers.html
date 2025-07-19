@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GooseFilms — Join the Club</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --cinema-purple: #6B46C1;
+            --cinema-gold: #F59E0B;
+            --cinema-red: #DC2626;
+            --cinema-dark: #1F2937;
+            --cinema-darker: #111827;
+            --cinema-light: #F3F4F6;
+            --neon-glow: 0 0 20px rgba(245, 158, 11, 0.8);
+            --success-green: #10B981;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--cinema-darker);
+            color: var(--cinema-light);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(107, 70, 193, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(245, 158, 11, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(31, 41, 55, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid var(--cinema-gold);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2.5rem;
+            color: var(--cinema-gold);
+            text-decoration: none;
+            text-shadow: var(--neon-glow);
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--cinema-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--cinema-gold);
+            text-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: clamp(3rem, 8vw, 6rem);
+            color: var(--cinema-gold);
+            text-shadow: var(--neon-glow);
+            margin-bottom: 1rem;
+            letter-spacing: 4px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--cinema-purple);
+            margin-bottom: 2rem;
+        }
+
+        /* Marquee */
+        .marquee {
+            background: var(--cinema-red);
+            padding: 1rem 0;
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+        }
+
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 20s linear infinite;
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* Job Openings */
+        .jobs-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .section-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 3rem;
+            color: var(--cinema-gold);
+            text-align: center;
+            margin-bottom: 3rem;
+            text-shadow: var(--neon-glow);
+        }
+
+        .jobs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .job-card {
+            background: linear-gradient(135deg, rgba(107, 70, 193, 0.1), rgba(245, 158, 11, 0.1));
+            border: 2px solid var(--cinema-purple);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .job-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(107, 70, 193, 0.3);
+            border-color: var(--cinema-gold);
+        }
+
+        .job-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(245, 158, 11, 0.1),
+                transparent
+            );
+            transform: rotate(45deg);
+            transition: all 0.5s ease;
+            opacity: 0;
+        }
+
+        .job-card:hover::before {
+            animation: shine 0.5s ease;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); opacity: 0; }
+        }
+
+        .job-emoji {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.5));
+        }
+
+        .job-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2rem;
+            color: var(--cinema-gold);
+            margin-bottom: 0.5rem;
+            letter-spacing: 2px;
+        }
+
+        .job-department {
+            color: var(--cinema-purple);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .job-description {
+            color: var(--cinema-light);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .job-requirements {
+            margin-bottom: 1.5rem;
+        }
+
+        .job-requirements h4 {
+            color: var(--cinema-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .job-requirements ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .job-requirements li {
+            padding-left: 1.5rem;
+            position: relative;
+            margin-bottom: 0.5rem;
+            color: var(--cinema-light);
+        }
+
+        .job-requirements li::before {
+            content: '🎬';
+            position: absolute;
+            left: 0;
+        }
+
+        .apply-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--cinema-gold);
+            color: var(--cinema-dark);
+            border: none;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .apply-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(245, 158, 11, 0.5);
+        }
+
+        /* Application Form */
+        .application-section {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, rgba(107, 70, 193, 0.1), rgba(31, 41, 55, 0.5));
+            border: 2px solid var(--cinema-gold);
+            border-radius: 30px;
+            margin-bottom: 4rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--cinema-gold);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(31, 41, 55, 0.8);
+            border: 2px solid var(--cinema-purple);
+            border-radius: 10px;
+            color: var(--cinema-light);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--cinema-gold);
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        .quiz-section {
+            margin: 2rem 0;
+            padding: 2rem;
+            background: rgba(107, 70, 193, 0.1);
+            border-radius: 15px;
+        }
+
+        .quiz-section h3 {
+            color: var(--cinema-gold);
+            margin-bottom: 1.5rem;
+        }
+
+        .quiz-question {
+            margin-bottom: 1.5rem;
+        }
+
+        .quiz-question label {
+            display: block;
+            color: var(--cinema-light);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .radio-option input[type="radio"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .submit-section {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .submit-btn {
+            padding: 1rem 3rem;
+            background: var(--cinema-gold);
+            color: var(--cinema-dark);
+            border: none;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(245, 158, 11, 0.5);
+        }
+
+        /* Benefits */
+        .benefits-section {
+            background: rgba(31, 41, 55, 0.5);
+            padding: 3rem 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .benefits-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .benefit-card {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(107, 70, 193, 0.1));
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .benefit-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .benefit-title {
+            color: var(--cinema-gold);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .benefit-description {
+            color: var(--cinema-light);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .jobs-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">GOOSEFILMS</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="members.html">Members</a></li>
+                <li><a href="voting.html">Vote</a></li>
+                <li><a href="careers.html">Join Us</a></li>
+                <li><a href="admin.html">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>JOIN THE CREW</h1>
+        <p class="hero-subtitle">Where Movie Magic Meets Friendship</p>
+    </section>
+
+    <!-- Marquee -->
+    <div class="marquee">
+        <div class="marquee-content">
+            🍿 NOW HIRING: PROFESSIONAL MOVIE WATCHERS • POPCORN ENTHUSIASTS • COUCH CRITICS • SNACK SPECIALISTS 🎬
+        </div>
+    </div>
+
+    <!-- Job Openings -->
+    <section class="jobs-container">
+        <h2 class="section-title">OPEN POSITIONS</h2>
+        
+        <div class="jobs-grid">
+            <!-- Job 1 -->
+            <div class="job-card">
+                <div class="job-emoji">🍿</div>
+                <h3 class="job-title">Chief Popcorn Officer</h3>
+                <p class="job-department">Snack Management Department</p>
+                <p class="job-description">
+                    Lead our snack operations with style and butter. Ensure optimal kernel-to-pop ratio 
+                    and maintain the perfect salt distribution across all servings.
+                </p>
+                <div class="job-requirements">
+                    <h4>Requirements:</h4>
+                    <ul>
+                        <li>Expert knowledge of popcorn varieties</li>
+                        <li>Strong opinions on butter vs. no butter</li>
+                        <li>Ability to share (negotiable)</li>
+                        <li>No kernels stuck in teeth during screenings</li>
+                    </ul>
+                </div>
+                <button class="apply-btn" onclick="scrollToApplication()">APPLY NOW</button>
+            </div>
+
+            <!-- Job 2 -->
+            <div class="job-card">
+                <div class="job-emoji">🛋️</div>
+                <h3 class="job-title">Director of Couch Arrangements</h3>
+                <p class="job-department">Comfort Engineering</p>
+                <p class="job-description">
+                    Architect the perfect viewing experience. Master of pillows, blankets, and optimal 
+                    seating configurations for maximum movie enjoyment.
+                </p>
+                <div class="job-requirements">
+                    <h4>Requirements:</h4>
+                    <ul>
+                        <li>PhD in Couch Potato Sciences preferred</li>
+                        <li>Expertise in blanket fort construction</li>
+                        <li>Strong negotiation skills for armrest disputes</li>
+                        <li>Ability to find remote in couch cushions</li>
+                    </ul>
+                </div>
+                <button class="apply-btn" onclick="scrollToApplication()">APPLY NOW</button>
+            </div>
+
+            <!-- Job 3 -->
+            <div class="job-card">
+                <div class="job-emoji">🍕</div>
+                <h3 class="job-title">Senior Snack Coordinator</h3>
+                <p class="job-department">Culinary Cinema Division</p>
+                <p class="job-description">
+                    Curate the perfect movie snack pairings. From nachos for action films to tissues 
+                    for tearjerkers, you'll ensure no one watches on an empty stomach.
+                </p>
+                <div class="job-requirements">
+                    <h4>Requirements:</h4>
+                    <ul>
+                        <li>Extensive knowledge of delivery apps</li>
+                        <li>Ability to eat quietly during dialogue</li>
+                        <li>Pizza ordering speed under 2 minutes</li>
+                        <li>Emergency candy stash management</li>
+                    </ul>
+                </div>
+                <button class="apply-btn" onclick="scrollToApplication()">APPLY NOW</button>
+            </div>
+
+            <!-- Job 4 -->
+            <div class="job-card">
+                <div class="job-emoji">🎭</div>
+                <h3 class="job-title">Movie Mood Manager</h3>
+                <p class="job-department">Vibe Control Department</p>
+                <p class="job-description">
+                    Set the perfect atmosphere for each screening. Master of lighting, temperature, 
+                    and pre-movie music playlists. Guardian of the sacred "no phones" rule.
+                </p>
+                <div class="job-requirements">
+                    <h4>Requirements:</h4>
+                    <ul>
+                        <li>Dimmer switch expertise</li>
+                        <li>Ability to shush politely but firmly</li>
+                        <li>Mood lighting certification</li>
+                        <li>Zero tolerance for spoilers</li>
+                    </ul>
+                </div>
+                <button class="apply-btn" onclick="scrollToApplication()">APPLY NOW</button>
+            </div>
+
+            <!-- Job 5 -->
+            <div class="job-card">
+                <div class="job-emoji">📊</div>
+                <h3 class="job-title">Stats & Trivia Keeper</h3>
+                <p class="job-department">Nerd Resources</p>
+                <p class="job-description">
+                    Track our movie-watching achievements and maintain the sacred database of quotes. 
+                    Create fun trivia questions and settle all movie-related debates.
+                </p>
+                <div class="job-requirements">
+                    <h4>Requirements:</h4>
+                    <ul>
+                        <li>Encyclopedic movie knowledge</li>
+                        <li>IMDB navigation black belt</li>
+                        <li>Ability to remember who said what</li>
+                        <li>Spreadsheet enthusiasm</li>
+                    </ul>
+                </div>
+                <button class="apply-btn" onclick="scrollToApplication()">APPLY NOW</button>
+            </div>
+
+            <!-- Job 6 -->
+            <div class="job-card">
+                <div class="job-emoji">😂</div>
+                <h3 class="job-title">Chief Laugh Officer</h3>
+                <p class="job-department">Comedy Appreciation Unit</p>
+                <p class="job-description">
+                    Ensure maximum laughter levels during comedy nights. Professional giggler with 
+                    contagious enthusiasm and expert timing on the pause button for laugh breaks.
+                </p>
+                <div class="job-requirements">
+                    <h4>Requirements:</h4>
+                    <ul>
+                        <li>Variety of laugh types in repertoire</li>
+                        <li>Ability to explain why it's funny</li>
+                        <li>Snort-laugh not required but appreciated</li>
+                        <li>Must not spoil punchlines</li>
+                    </ul>
+                </div>
+                <button class="apply-btn" onclick="scrollToApplication()">APPLY NOW</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="benefits-section">
+        <h2 class="section-title">MEMBER BENEFITS</h2>
+        <div class="benefits-grid">
+            <div class="benefit-card">
+                <div class="benefit-icon">🎬</div>
+                <h3 class="benefit-title">Unlimited Movies</h3>
+                <p class="benefit-description">Watch as many movies as your eyes can handle</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">🍿</div>
+                <h3 class="benefit-title">Free Snacks*</h3>
+                <p class="benefit-description">*When someone else brings them</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">👑</div>
+                <h3 class="benefit-title">Voting Rights</h3>
+                <p class="benefit-description">Democracy in action for movie selection</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">🏆</div>
+                <h3 class="benefit-title">Achievement Badges</h3>
+                <p class="benefit-description">Earn recognition for your dedication</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Application Form -->
+    <section class="application-section" id="applicationForm">
+        <h2 class="section-title">APPLICATION FORM</h2>
+        
+        <form onsubmit="submitApplication(event)">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="position">Position Applying For</label>
+                <select id="position" name="position" required>
+                    <option value="">Select a position...</option>
+                    <option value="cpo">Chief Popcorn Officer</option>
+                    <option value="dca">Director of Couch Arrangements</option>
+                    <option value="ssc">Senior Snack Coordinator</option>
+                    <option value="mmm">Movie Mood Manager</option>
+                    <option value="stk">Stats & Trivia Keeper</option>
+                    <option value="clo">Chief Laugh Officer</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="experience">Why should we pick you? (Make us laugh)</label>
+                <textarea id="experience" name="experience" required></textarea>
+            </div>
+            
+            <!-- Fun Quiz Section -->
+            <div class="quiz-section">
+                <h3>🎬 MOVIE COMPATIBILITY TEST</h3>
+                
+                <div class="quiz-question">
+                    <label>Popcorn: Butter or No Butter?</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="popcorn" value="butter" required>
+                            <span>Butter all the way!</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="popcorn" value="no-butter" required>
+                            <span>Keep it clean</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="popcorn" value="both" required>
+                            <span>I'm flexible</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="quiz-question">
+                    <label>Best movie snack combo?</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="snack" value="classic" required>
+                            <span>Popcorn & Soda</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="snack" value="candy" required>
+                            <span>All the candy!</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="snack" value="dinner" required>
+                            <span>Full dinner spread</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="snack" value="healthy" required>
+                            <span>Fruits & veggies (really?)</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="quiz-question">
+                    <label>Movie ending preference?</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="ending" value="happy" required>
+                            <span>Happy endings only!</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="ending" value="sad" required>
+                            <span>Make me cry</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="ending" value="twist" required>
+                            <span>Plot twist me!</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="ending" value="open" required>
+                            <span>Leave me confused</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="submit-section">
+                <button type="submit" class="submit-btn">SUBMIT APPLICATION</button>
+            </div>
+        </form>
+    </section>
+
+    <script>
+        // Scroll to application form
+        function scrollToApplication() {
+            document.getElementById('applicationForm').scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center' 
+            });
+        }
+        
+        // Submit application
+        function submitApplication(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData);
+            
+            // Show success message
+            alert(`🎉 Application submitted!\n\nThanks ${data.name}! We'll review your application and get back to you faster than you can say "Action!"\n\nIn the meantime, start practicing your movie quotes!`);
+            
+            // Reset form
+            event.target.reset();
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // Add floating elements
+        const floatingElements = ['🍿', '🎬', '🎭', '🎪', '🎨'];
+        const body = document.body;
+        
+        floatingElements.forEach((emoji, index) => {
+            const element = document.createElement('div');
+            element.textContent = emoji;
+            element.style.cssText = `
+                position: fixed;
+                font-size: 2rem;
+                opacity: 0.3;
+                pointer-events: none;
+                z-index: 1;
+                animation: float ${4 + index}s ease-in-out infinite;
+                animation-delay: ${index}s;
+                top: ${Math.random() * 80}%;
+                left: ${Math.random() * 90}%;
+            `;
+            body.appendChild(element);
+        });
+        
+        // Add floating animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes float {
+                0%, 100% { transform: translateY(0) rotate(0deg); }
+                50% { transform: translateY(-30px) rotate(180deg); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

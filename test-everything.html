@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete System Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #f5f5f7;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .test-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        h1 {
+            color: #1d1d1f;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+        .status {
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        button {
+            background: #007AFF;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: #0051D5;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,122,255,0.3);
+        }
+        .btn-success {
+            background: #34C759;
+        }
+        .btn-success:hover {
+            background: #2AA147;
+        }
+        .btn-danger {
+            background: #FF3B30;
+        }
+        .btn-danger:hover {
+            background: #D70015;
+        }
+        .console {
+            background: #1e1e1e;
+            color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 12px;
+            height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+        .console-line {
+            margin: 2px 0;
+        }
+        .log { color: #fff; }
+        .error-log { color: #ff6b6b; }
+        .success-log { color: #51cf66; }
+        .warning-log { color: #ffd43b; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #f5f5f7;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎬 GooseFilms Complete System Test</h1>
+    
+    <div class="container">
+        <div class="test-card">
+            <h2>🔌 System Status</h2>
+            <div id="systemStatus"></div>
+        </div>
+        
+        <div class="test-card">
+            <h2>🔐 Authentication</h2>
+            <div id="authStatus"></div>
+            <button onclick="testAuth()">Test Auth System</button>
+            <button onclick="login()">Login</button>
+            <button onclick="logout()">Logout</button>
+        </div>
+        
+        <div class="test-card">
+            <h2>🔥 Firebase Status</h2>
+            <div id="firebaseStatus"></div>
+            <button onclick="testFirebase()">Test Firebase</button>
+        </div>
+        
+        <div class="test-card">
+            <h2>🗺️ Navigation</h2>
+            <button onclick="navigate('index.html')">Home</button>
+            <button onclick="navigate('login.html')">Login</button>
+            <button onclick="navigate('admin.html')">Admin</button>
+            <button onclick="navigate('members.html')">Members</button>
+            <button onclick="navigate('voting.html')">Voting</button>
+            <button onclick="navigate('careers.html')">Careers</button>
+        </div>
+        
+        <div class="test-card full-width">
+            <h2>🎥 Movie Scheduling Test</h2>
+            <div id="scheduleTest"></div>
+            <button onclick="testScheduling()">Test Movie Scheduling</button>
+            <button onclick="viewSchedules()">View Current Schedules</button>
+        </div>
+        
+        <div class="test-card full-width">
+            <h2>💾 Storage Inspector</h2>
+            <table id="storageTable"></table>
+            <button onclick="refreshStorage()">Refresh</button>
+            <button class="btn-danger" onclick="clearStorage()">Clear All Storage</button>
+        </div>
+        
+        <div class="test-card full-width">
+            <h2>📋 Console Output</h2>
+            <div class="console" id="console"></div>
+        </div>
+    </div>
+
+    <!-- Load all required scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="config.js"></script>
+    <script src="js/firebase.js"></script>
+    <script src="js/simpleAuth.js"></script>
+    <script src="js/firebaseDatabase.js"></script>
+    <script src="js/movieAPI.js"></script>
+    <script src="js/scheduleManager.js"></script>
+    
+    <script>
+        // Console logging
+        const consoleDiv = document.getElementById('console');
+        function log(msg, type = 'log') {
+            const time = new Date().toLocaleTimeString();
+            const className = type === 'error' ? 'error-log' : 
+                            type === 'success' ? 'success-log' : 
+                            type === 'warning' ? 'warning-log' : 'log';
+            consoleDiv.innerHTML += `<div class="console-line ${className}">[${time}] ${msg}</div>`;
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+            console[type === 'success' ? 'log' : type](msg);
+        }
+        
+        // System status check
+        function checkSystemStatus() {
+            const statusDiv = document.getElementById('systemStatus');
+            const checks = {
+                'LocalStorage': typeof(Storage) !== "undefined",
+                'simpleAuth': !!window.simpleAuth,
+                'Firebase Utils': !!window.firebaseUtils,
+                'Schedule Manager': !!window.scheduleManager,
+                'Movie API': !!window.movieAPI,
+                'CONFIG': !!window.CONFIG
+            };
+            
+            let html = '';
+            for (const [name, loaded] of Object.entries(checks)) {
+                html += `<div class="status ${loaded ? 'success' : 'error'}">
+                    ${loaded ? '✓' : '✗'} ${name}
+                </div>`;
+                log(`${name}: ${loaded ? 'Loaded' : 'Not loaded'}`, loaded ? 'success' : 'error');
+            }
+            statusDiv.innerHTML = html;
+        }
+        
+        // Auth status
+        function updateAuthStatus() {
+            const statusDiv = document.getElementById('authStatus');
+            if (!window.simpleAuth) {
+                statusDiv.innerHTML = '<div class="status error">simpleAuth not loaded</div>';
+                return;
+            }
+            
+            const isAuth = window.simpleAuth.isAuthenticated();
+            const sessionInfo = window.simpleAuth.getSessionInfo();
+            
+            let html = `<div class="status ${isAuth ? 'success' : 'warning'}">
+                ${isAuth ? '✓ Authenticated' : '⚠ Not authenticated'}
+            </div>`;
+            
+            if (sessionInfo) {
+                html += `<div class="status info">
+                    Session expires in ${sessionInfo.remainingMinutes} minutes
+                </div>`;
+            }
+            
+            html += '<div class="status info">Codeword: goosefilms2024</div>';
+            statusDiv.innerHTML = html;
+        }
+        
+        // Test auth
+        async function testAuth() {
+            log('=== Testing Authentication System ===');
+            
+            // Test wrong password
+            const wrongResult = window.simpleAuth.login('wrong');
+            log(`Wrong password test: ${!wrongResult.success ? 'PASS' : 'FAIL'}`, 
+                !wrongResult.success ? 'success' : 'error');
+            
+            // Test correct password
+            const correctResult = window.simpleAuth.login('goosefilms2024');
+            log(`Correct password test: ${correctResult.success ? 'PASS' : 'FAIL'}`, 
+                correctResult.success ? 'success' : 'error');
+            
+            // Test session
+            const isAuth = window.simpleAuth.isAuthenticated();
+            log(`Session test: ${isAuth ? 'PASS' : 'FAIL'}`, isAuth ? 'success' : 'error');
+            
+            // Logout
+            window.simpleAuth.logout();
+            const afterLogout = window.simpleAuth.isAuthenticated();
+            log(`Logout test: ${!afterLogout ? 'PASS' : 'FAIL'}`, 
+                !afterLogout ? 'success' : 'error');
+            
+            updateAuthStatus();
+        }
+        
+        // Quick login
+        function login() {
+            const result = window.simpleAuth.login('goosefilms2024');
+            if (result.success) {
+                log('Login successful', 'success');
+                updateAuthStatus();
+            } else {
+                log('Login failed', 'error');
+            }
+        }
+        
+        function logout() {
+            window.simpleAuth.logout();
+            log('Logged out', 'success');
+            updateAuthStatus();
+        }
+        
+        // Firebase test
+        async function testFirebase() {
+            const statusDiv = document.getElementById('firebaseStatus');
+            log('=== Testing Firebase ===');
+            
+            if (!window.firebaseUtils) {
+                statusDiv.innerHTML = '<div class="status error">Firebase utils not loaded</div>';
+                log('Firebase utils not loaded', 'error');
+                return;
+            }
+            
+            const isConfigured = window.firebaseUtils.isFirebaseConfigured();
+            const db = window.firebaseUtils.getFirestore();
+            
+            statusDiv.innerHTML = `
+                <div class="status ${isConfigured ? 'success' : 'error'}">
+                    ${isConfigured ? '✓' : '✗'} Firebase configured
+                </div>
+                <div class="status ${db ? 'success' : 'error'}">
+                    ${db ? '✓' : '✗'} Firestore available
+                </div>
+            `;
+            
+            if (db) {
+                try {
+                    // Test write
+                    await db.collection('test').doc('test').set({
+                        timestamp: new Date(),
+                        test: true
+                    });
+                    log('Firebase write test: PASS', 'success');
+                    
+                    // Test read
+                    const doc = await db.collection('test').doc('test').get();
+                    if (doc.exists) {
+                        log('Firebase read test: PASS', 'success');
+                        statusDiv.innerHTML += '<div class="status success">✓ Read/Write working</div>';
+                    }
+                } catch (error) {
+                    log(`Firebase test error: ${error.message}`, 'error');
+                    statusDiv.innerHTML += '<div class="status error">✗ ' + error.message + '</div>';
+                }
+            }
+        }
+        
+        // Navigation
+        function navigate(page) {
+            log(`Navigating to ${page}`, 'success');
+            window.location.href = page;
+        }
+        
+        // Schedule test
+        async function testScheduling() {
+            const statusDiv = document.getElementById('scheduleTest');
+            log('=== Testing Movie Scheduling ===');
+            
+            if (!window.scheduleManager) {
+                statusDiv.innerHTML = '<div class="status error">Schedule manager not loaded</div>';
+                return;
+            }
+            
+            try {
+                // Ensure initialized
+                await scheduleManager.ensureInitialized();
+                log('Schedule manager initialized', 'success');
+                
+                // Test adding a movie
+                const testMovie = {
+                    id: 999,
+                    title: 'Test Movie',
+                    poster_path: null,
+                    vote_average: 8.5,
+                    release_date: '2024-01-01'
+                };
+                
+                const testDate = new Date();
+                const showtimes = ['7:00 PM'];
+                const theaterId = 1;
+                
+                await scheduleManager.addMovieToSchedule(testDate, testMovie, showtimes, theaterId);
+                log('Test movie scheduled', 'success');
+                
+                // Verify it was added
+                const schedules = scheduleManager.getScheduleForDate(testDate);
+                const found = schedules.find(s => s.movie.id === 999);
+                
+                if (found) {
+                    log('Schedule verification: PASS', 'success');
+                    statusDiv.innerHTML = '<div class="status success">✓ Scheduling system working</div>';
+                    
+                    // Clean up
+                    await scheduleManager.removeMovieFromSchedule(
+                        scheduleManager.formatDateKey(testDate), 
+                        found.id
+                    );
+                    log('Test movie removed', 'success');
+                } else {
+                    log('Schedule verification: FAIL', 'error');
+                    statusDiv.innerHTML = '<div class="status error">✗ Could not verify schedule</div>';
+                }
+            } catch (error) {
+                log(`Schedule test error: ${error.message}`, 'error');
+                statusDiv.innerHTML = '<div class="status error">✗ ' + error.message + '</div>';
+            }
+        }
+        
+        // View schedules
+        async function viewSchedules() {
+            const statusDiv = document.getElementById('scheduleTest');
+            const schedules = scheduleManager.schedules;
+            
+            let html = '<h3>Current Schedules:</h3>';
+            const dates = Object.keys(schedules).sort();
+            
+            if (dates.length === 0) {
+                html += '<div class="status info">No movies scheduled</div>';
+            } else {
+                dates.forEach(date => {
+                    html += `<div class="status info"><strong>${date}:</strong> `;
+                    html += schedules[date].map(s => s.movie.title).join(', ');
+                    html += '</div>';
+                });
+            }
+            
+            statusDiv.innerHTML = html;
+        }
+        
+        // Storage inspector
+        function refreshStorage() {
+            const table = document.getElementById('storageTable');
+            let html = '<tr><th>Key</th><th>Value</th><th>Action</th></tr>';
+            
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                const value = localStorage.getItem(key);
+                let displayValue = value;
+                
+                try {
+                    const parsed = JSON.parse(value);
+                    displayValue = JSON.stringify(parsed, null, 2);
+                } catch {}
+                
+                html += `<tr>
+                    <td><strong>${key}</strong></td>
+                    <td><pre style="max-width: 400px; overflow: auto;">${displayValue.substring(0, 200)}${displayValue.length > 200 ? '...' : ''}</pre></td>
+                    <td><button onclick="removeItem('${key}')" class="btn-danger">Remove</button></td>
+                </tr>`;
+            }
+            
+            table.innerHTML = html;
+        }
+        
+        function removeItem(key) {
+            localStorage.removeItem(key);
+            log(`Removed localStorage item: ${key}`, 'success');
+            refreshStorage();
+        }
+        
+        function clearStorage() {
+            if (confirm('Clear all localStorage data?')) {
+                localStorage.clear();
+                log('All localStorage cleared', 'warning');
+                refreshStorage();
+                updateAuthStatus();
+            }
+        }
+        
+        // Initialize
+        window.addEventListener('DOMContentLoaded', async () => {
+            log('System test loaded', 'success');
+            checkSystemStatus();
+            updateAuthStatus();
+            refreshStorage();
+            
+            // Initialize schedule manager
+            if (window.scheduleManager) {
+                await scheduleManager.ensureInitialized();
+                log('Schedule manager ready', 'success');
+            }
+        });
+        
+        // Auto-refresh auth status
+        setInterval(updateAuthStatus, 5000);
+    </script>
+</body>
+</html>

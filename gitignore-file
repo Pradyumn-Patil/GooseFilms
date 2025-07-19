@@ -1,0 +1,36 @@
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Python
+*.pyc
+__pycache__/
+*.py
+
+# Test and debug files
+test-*.html
+debug-*.html
+admin-debug.html
+fix-all.html
+diagnose.html
+create-favicon.html
+*.sh
+*.command
+
+# Editor directories
+.vscode/
+.idea/
+.claude/
+
+# Local development
+node_modules/
+.env
+.env.local
+
+# Logs
+*.log

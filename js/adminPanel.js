@@ -18,11 +18,17 @@ class AdminPanel {
         this.renderCalendar();
         this.updateSelectedDateDisplay();
         this.loadScheduleForSelectedDate();
+        this.checkFirebaseStatus();
+        
+        // Listen for real-time updates
+        window.addEventListener('schedulesUpdated', () => {
+            this.loadScheduleForSelectedDate();
+        });
     }
 
     checkAuth() {
-        const isLoggedIn = localStorage.getItem('adminLoggedIn');
-        if (!isLoggedIn) {
+        // Use simple auth instead of old method
+        if (!window.simpleAuth || !window.simpleAuth.isAuthenticated()) {
             this.redirectToLogin();
         }
     }
@@ -79,6 +85,14 @@ class AdminPanel {
     async searchMovies(query) {
         const resultsContainer = document.getElementById('searchResults');
         
+        if (!resultsContainer) {
+            console.error('Search results container not found');
+            return;
+        }
+        
+        // Ensure container is visible
+        resultsContainer.style.display = 'block';
+        
         if (!query.trim()) {
             resultsContainer.innerHTML = '<p>Start typing to search for movies...</p>';
             return;
@@ -88,6 +102,7 @@ class AdminPanel {
 
         try {
             const movies = await movieAPI.searchMovies(query);
+            console.log(`Found ${movies.length} movies for query: ${query}`);
             this.displaySearchResults(movies);
         } catch (error) {
             resultsContainer.innerHTML = '<p>Error searching movies. Please try again.</p>';
@@ -103,8 +118,16 @@ class AdminPanel {
             return;
         }
 
-        container.innerHTML = movies.slice(0, 10).map(movie => `
-            <div class="movie-search-item" onclick="adminPanel.selectMovieForScheduling(${JSON.stringify(movie).replace(/"/g, '&quot;')})">
+        // Clear container
+        container.innerHTML = '';
+        
+        // Create movie items with proper event listeners
+        movies.slice(0, 10).forEach((movie, index) => {
+            const movieDiv = document.createElement('div');
+            movieDiv.className = 'movie-search-item';
+            movieDiv.style.cursor = 'pointer';
+            
+            movieDiv.innerHTML = `
                 <div class="movie-poster-small" style="background-image: url('${movieAPI.getImageUrl(movie.poster_path) || ''}')">
                     ${!movie.poster_path ? '🎬' : ''}
                 </div>
@@ -113,22 +136,71 @@ class AdminPanel {
                     <div class="movie-year">${movie.release_date ? new Date(movie.release_date).getFullYear() : 'N/A'}</div>
                     <div class="movie-rating">⭐ ${movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}</div>
                 </div>
-            </div>
-        `).join('');
+            `;
+            
+            // Add click event listener
+            movieDiv.addEventListener('click', () => {
+                console.log('Movie clicked:', movie.title);
+                this.selectMovieForScheduling(movie);
+            });
+            
+            container.appendChild(movieDiv);
+        });
     }
 
     selectMovieForScheduling(movie) {
+        console.log('Selected movie:', movie);
         this.selectedMovie = movie;
         this.showScheduleForm();
         this.displaySelectedMovie();
     }
 
     showScheduleForm() {
-        document.getElementById('scheduleForm').style.display = 'block';
+        const form = document.getElementById('scheduleForm');
+        if (form) {
+            // Clear search results to make room
+            const searchResults = document.getElementById('searchResults');
+            if (searchResults) {
+                searchResults.style.display = 'none';
+            }
+            
+            // Show the form
+            form.style.display = 'block';
+            form.style.visibility = 'visible';
+            form.style.opacity = '1';
+            
+            // Force a reflow to ensure the form is rendered
+            form.offsetHeight;
+            
+            // Scroll to form
+            setTimeout(() => {
+                form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+            
+            console.log('Schedule form shown');
+            
+            // Show success notification
+            if (window.showNotification) {
+                showNotification('Movie selected! Fill in the details below.', 'info');
+            }
+        } else {
+            console.error('Schedule form not found!');
+            alert('Error: Schedule form not found. Please refresh the page.');
+        }
     }
 
     hideScheduleForm() {
-        document.getElementById('scheduleForm').style.display = 'none';
+        const form = document.getElementById('scheduleForm');
+        if (form) {
+            form.style.display = 'none';
+        }
+        
+        // Show search results again
+        const searchResults = document.getElementById('searchResults');
+        if (searchResults) {
+            searchResults.style.display = 'block';
+        }
+        
         this.selectedMovie = null;
         this.selectedTimes = [];
         this.clearTimeSlotSelections();
@@ -136,17 +208,27 @@ class AdminPanel {
 
     displaySelectedMovie() {
         const container = document.getElementById('selectedMovieInfo');
-        if (!this.selectedMovie) return;
+        if (!container) {
+            console.error('selectedMovieInfo container not found');
+            return;
+        }
+        
+        if (!this.selectedMovie) {
+            console.error('No movie selected');
+            return;
+        }
 
+        console.log('Displaying selected movie:', this.selectedMovie.title);
+        
         container.innerHTML = `
-            <div style="display: flex; gap: 15px; margin-bottom: 15px; padding: 15px; background: white; border-radius: 8px;">
+            <div style="display: flex; gap: 15px; margin-bottom: 15px; padding: 15px; background: var(--apple-tertiary-background); border-radius: 8px; border: 1px solid var(--apple-gray-3);">
                 <div style="width: 60px; height: 90px; background-image: url('${movieAPI.getImageUrl(this.selectedMovie.poster_path) || ''}'); background-size: cover; background-position: center; border-radius: 4px; background-color: #ddd; display: flex; align-items: center; justify-content: center;">
                     ${!this.selectedMovie.poster_path ? '🎬' : ''}
                 </div>
                 <div>
-                    <h4>${this.selectedMovie.title}</h4>
-                    <p>Release: ${this.selectedMovie.release_date ? new Date(this.selectedMovie.release_date).getFullYear() : 'N/A'}</p>
-                    <p>Rating: ⭐ ${this.selectedMovie.vote_average ? this.selectedMovie.vote_average.toFixed(1) : 'N/A'}</p>
+                    <h4 style="margin: 0 0 8px 0; color: var(--apple-label);">${this.selectedMovie.title}</h4>
+                    <p style="margin: 4px 0; color: var(--apple-secondary-label);">Release: ${this.selectedMovie.release_date ? new Date(this.selectedMovie.release_date).getFullYear() : 'N/A'}</p>
+                    <p style="margin: 4px 0; color: var(--apple-secondary-label);">Rating: ⭐ ${this.selectedMovie.vote_average ? this.selectedMovie.vote_average.toFixed(1) : 'N/A'}</p>
                 </div>
             </div>
         `;
@@ -179,13 +261,8 @@ class AdminPanel {
                 theaterId
             );
 
-            // Show different messages based on environment
-            const envInfo = fileStorage.getEnvironmentInfo();
-            if (envInfo.isLocal) {
-                alert('Movie scheduled successfully!\n\n🤖 AUTOMATIC WORKFLOW:\n1. Replace /data/schedules.json with the downloaded file\n2. Run: ./auto-commit.sh\n\nThis will automatically commit and push to GitHub Pages!');
-            } else {
-                alert('Movie scheduled successfully! (Note: Changes are only visible locally on GitHub Pages)');
-            }
+            // Show success message
+            showNotification('✅ Movie scheduled successfully! Changes are saved to Firebase in real-time.', 'success');
             
             this.hideScheduleForm();
             this.renderCalendar();
@@ -250,7 +327,7 @@ class AdminPanel {
         const isCurrentMonth = date >= firstDay && date <= lastDay;
         const isSelected = this.isSameDay(date, this.selectedDate);
         const scheduledMovies = scheduleManager.getScheduleForDate(date);
-        const hasMovies = scheduledMovies.length > 0;
+        const hasMovies = Array.isArray(scheduledMovies) && scheduledMovies.length > 0;
         
         if (!isCurrentMonth) {
             day.classList.add('other-month');
@@ -266,10 +343,14 @@ class AdminPanel {
 
         day.innerHTML = `
             <div class="day-number">${date.getDate()}</div>
-            ${scheduledMovies.slice(0, 2).map(schedule => 
-                `<div class="movie-indicator">${schedule.movie.title.substring(0, 8)}...</div>`
-            ).join('')}
-            ${scheduledMovies.length > 2 ? `<div class="movie-indicator">+${scheduledMovies.length - 2}</div>` : ''}
+            ${Array.isArray(scheduledMovies) && scheduledMovies.length > 0 ? 
+                scheduledMovies.slice(0, 2).map(schedule => 
+                    `<div class="movie-indicator">${schedule.movie.title.substring(0, 8)}...</div>`
+                ).join('') : ''
+            }
+            ${Array.isArray(scheduledMovies) && scheduledMovies.length > 2 ? 
+                `<div class="movie-indicator">+${scheduledMovies.length - 2}</div>` : ''
+            }
         `;
 
         day.onclick = () => this.selectDate(date);
@@ -293,7 +374,7 @@ class AdminPanel {
         const container = document.getElementById('daySchedule');
         const schedules = scheduleManager.getScheduleForDate(this.selectedDate);
         
-        if (schedules.length === 0) {
+        if (!Array.isArray(schedules) || schedules.length === 0) {
             container.innerHTML = '<p>No movies scheduled for this date.</p>';
             return;
         }
@@ -366,19 +447,17 @@ class AdminPanel {
                     </div>
                 </div>
 
-                <div class="export-section">
-                    <h4>📁 Data Management</h4>
-                    <div class="export-buttons">
-                        <button class="btn" onclick="scheduleManager.exportToCSV()">📊 Export CSV</button>
-                        <button class="btn" onclick="scheduleManager.exportToText()">📄 Export Text</button>
-                        <button class="btn" onclick="adminPanel.showImportDialog()">📥 Import CSV</button>
-                        <button class="btn btn-danger" onclick="adminPanel.clearAllData()">🗑️ Clear All</button>
+                <div class="firebase-status">
+                    <h4>🔥 Firebase Status</h4>
+                    <div id="firebaseStatus" class="status-indicator">
+                        <span class="status-dot"></span>
+                        <span class="status-text">Checking connection...</span>
                     </div>
-                    
-                    <div class="import-section" id="importSection" style="display: none;">
-                        <h5>Import Schedule from CSV</h5>
-                        <input type="file" id="csvFileInput" accept=".csv" onchange="adminPanel.handleFileImport(event)">
-                        <p class="help-text">Select a CSV file exported from this system</p>
+                    <div class="sync-info">
+                        <p>All changes are automatically saved to Firebase and synced in real-time across all devices.</p>
+                    </div>
+                    <div class="danger-zone">
+                        <button class="btn btn-danger" onclick="adminPanel.clearAllData()">🗑️ Clear All Schedules</button>
                     </div>
                 </div>
 
@@ -416,10 +495,41 @@ class AdminPanel {
         if (confirm('Are you sure you want to delete ALL scheduled movies? This cannot be undone.')) {
             if (confirm('This will permanently delete all movie schedules. Are you absolutely sure?')) {
                 await scheduleManager.clearAllSchedules();
-                alert('All schedules have been cleared.');
+                showNotification('All schedules have been cleared.', 'success');
                 this.switchTab('calendar');
             }
         }
+    }
+    
+    checkFirebaseStatus() {
+        const statusElement = document.getElementById('firebaseStatus');
+        if (!statusElement) return;
+        
+        const statusDot = statusElement.querySelector('.status-dot');
+        const statusText = statusElement.querySelector('.status-text');
+        
+        // Check Firebase connection
+        const status = scheduleManager.getConnectionStatus();
+        
+        if (status.firebase) {
+            statusDot.style.backgroundColor = '#10B981';
+            statusText.textContent = 'Connected to Firebase';
+            statusText.style.color = '#10B981';
+        } else {
+            statusDot.style.backgroundColor = '#EF4444';
+            statusText.textContent = 'Firebase not configured - Changes will not be saved';
+            statusText.style.color = '#EF4444';
+        }
+        
+        // Update status every 30 seconds
+        setInterval(() => {
+            const currentStatus = scheduleManager.getConnectionStatus();
+            if (currentStatus.firebase) {
+                statusDot.style.backgroundColor = '#10B981';
+                statusText.textContent = `Connected - ${currentStatus.schedulesCount} dates scheduled`;
+                statusText.style.color = '#10B981';
+            }
+        }, 30000);
     }
 
     switchTab(tab) {
@@ -516,6 +626,11 @@ function switchTab(tab) {
 }
 
 function logout() {
+    // Use simpleAuth logout
+    if (window.simpleAuth) {
+        window.simpleAuth.logout();
+    }
+    // Also remove old key for compatibility
     localStorage.removeItem('adminLoggedIn');
     window.location.href = 'login.html';
 }
@@ -536,4 +651,5 @@ function cancelSchedule() {
 let adminPanel;
 document.addEventListener('DOMContentLoaded', () => {
     adminPanel = new AdminPanel();
+    window.adminPanel = adminPanel; // Make it globally accessible
 });

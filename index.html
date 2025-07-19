@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineClub — Movie Showtimes</title>
+    <title>GooseFilms — Your Exclusive Movie Club</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@100;200;300;400;500;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;600;700&display=swap');
         
         * {
             margin: 0;
@@ -14,20 +16,13 @@
         }
 
         :root {
-            --apple-blue: #007AFF;
-            --apple-blue-dark: #0051D5;
-            --apple-gray: #F2F2F7;
-            --apple-gray-2: #E5E5EA;
-            --apple-gray-3: #D1D1D6;
-            --apple-gray-4: #C7C7CC;
-            --apple-gray-5: #AEAEB2;
-            --apple-gray-6: #8E8E93;
-            --apple-label: #000000;
-            --apple-secondary-label: #3C3C43;
-            --apple-tertiary-label: #3C3C4399;
-            --apple-background: #FFFFFF;
-            --apple-secondary-background: #F2F2F7;
-            --apple-tertiary-background: #FFFFFF;
+            --cinema-purple: #6B46C1;
+            --cinema-gold: #F59E0B;
+            --cinema-red: #DC2626;
+            --cinema-dark: #1F2937;
+            --cinema-darker: #111827;
+            --cinema-light: #F3F4F6;
+            --neon-glow: 0 0 20px rgba(245, 158, 11, 0.8);
             --apple-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
             --apple-shadow-large: 0 10px 25px rgba(0,0,0,0.15), 0 4px 10px rgba(0,0,0,0.08);
             --apple-radius-small: 8px;
@@ -37,20 +32,21 @@
         }
 
         body {
-            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--apple-background);
+            font-family: 'Poppins', sans-serif;
+            background: var(--cinema-darker);
             min-height: 100vh;
-            color: var(--apple-label);
+            color: var(--cinema-light);
             -webkit-font-smoothing: antialiased;
             text-rendering: optimizeLegibility;
         }
 
-        /* Hero section with Apple-style gradient */
+        /* Hero section with cinema theme */
         .hero-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1a0f1f 0%, #2d1b3d 50%, #1a0f1f 100%);
             position: relative;
             overflow: hidden;
-            min-height: 60vh;
+            min-height: 70vh;
+            border-bottom: 5px solid #F59E0B;
         }
 
         .hero-section::before {
@@ -60,10 +56,22 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: 
-                linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.1)),
-                url('assets/lev.jpeg') center top/cover;
-            background-blend-mode: overlay;
+            background: url('assets/lev.jpeg') center center/cover;
+            opacity: 0.2;
+            filter: blur(2px);
+        }
+
+        /* Floating elements */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+
+        .floating-element {
+            position: absolute;
+            font-size: 3rem;
+            animation: float 4s ease-in-out infinite;
+            opacity: 0.6;
         }
 
         .hero-content {
@@ -89,22 +97,65 @@
         }
 
         h1 {
-            font-size: clamp(2.5rem, 8vw, 4rem);
-            font-weight: 700;
-            letter-spacing: -0.02em;
+            font-family: 'Bebas Neue', cursive;
+            font-size: clamp(4rem, 10vw, 8rem);
+            font-weight: 400;
+            letter-spacing: 4px;
             margin-bottom: 16px;
-            line-height: 1.1;
+            line-height: 0.9;
+            color: var(--cinema-gold);
+            text-shadow: var(--neon-glow);
         }
 
         .hero-subtitle {
-            font-size: 1.375rem;
+            font-size: 1.75rem;
             font-weight: 400;
             opacity: 0.9;
-            margin-bottom: 32px;
+            margin-bottom: 48px;
             max-width: 600px;
             margin-left: auto;
             margin-right: auto;
             line-height: 1.4;
+            color: var(--cinema-purple);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: var(--cinema-gold);
+            color: var(--cinema-dark);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.6);
+        }
+
+        .cta-secondary {
+            background: transparent;
+            border: 2px solid var(--cinema-gold);
+            color: var(--cinema-gold);
+        }
+
+        .cta-secondary:hover {
+            background: var(--cinema-gold);
+            color: var(--cinema-dark);
         }
 
         .admin-link {
@@ -137,13 +188,13 @@
 
         /* Navigation section */
         .nav-section {
-            padding: 32px 0;
-            background: var(--apple-background);
+            padding: 20px 0;
+            background: rgba(31, 41, 55, 0.95);
             position: sticky;
             top: 0;
             z-index: 100;
             backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--apple-gray-4);
+            border-bottom: 2px solid var(--cinema-gold);
         }
 
         .filter-nav {
@@ -154,32 +205,51 @@
         }
 
         .filter-btn {
-            background: var(--apple-gray);
-            color: var(--apple-label);
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 15px;
-            font-weight: 500;
+            background: transparent;
+            color: var(--cinema-light);
+            border: 2px solid var(--cinema-purple);
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
             font-family: inherit;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .filter-btn:hover {
-            background: var(--apple-gray-2);
-            transform: translateY(-1px);
+            background: var(--cinema-purple);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(107, 70, 193, 0.4);
         }
 
         .filter-btn.active {
-            background: var(--apple-blue);
-            color: white;
+            background: var(--cinema-gold);
+            color: var(--cinema-dark);
+            border-color: var(--cinema-gold);
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
         }
 
         /* Movies section */
         .movies-section {
             padding: 48px 0 80px;
-            background: var(--apple-background);
+            background: var(--cinema-darker);
+            position: relative;
+        }
+        
+        .movies-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(107, 70, 193, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(245, 158, 11, 0.05) 0%, transparent 50%);
+            pointer-events: none;
         }
 
         .section-title {
@@ -461,19 +531,32 @@
 <body>
     <!-- Hero Section -->
     <section class="hero-section">
-        <a href="login.html" class="admin-link">Admin</a>
+        <div class="floating-element" style="top: 10%; left: 5%; animation-delay: 0s;">🍿</div>
+        <div class="floating-element" style="top: 20%; right: 10%; animation-delay: 1s;">🎬</div>
+        <div class="floating-element" style="bottom: 30%; left: 8%; animation-delay: 2s;">🎭</div>
+        
         <div class="hero-content">
-            <div class="logo-container">
-                <div class="logo"></div>
+            <h1>GOOSEFILMS</h1>
+            <p class="hero-subtitle">Chill together like a goose in a freezer</p>
+            <div class="hero-buttons">
+                <a href="members.html" class="cta-button">Meet the Crew</a>
+                <a href="voting.html" class="cta-button cta-secondary">Vote Next Movie</a>
             </div>
-            <h1>CineClub</h1>
-            <p class="hero-subtitle">Experience cinema like never before with our premium movie selection and state-of-the-art theaters.</p>
         </div>
     </section>
 
     <!-- Navigation -->
     <section class="nav-section">
         <div class="container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <nav style="display: flex; gap: 2rem;">
+                    <a href="index.html" style="color: var(--cinema-gold); text-decoration: none; font-weight: 600;">Home</a>
+                    <a href="members.html" style="color: var(--cinema-light); text-decoration: none; font-weight: 600;">Members</a>
+                    <a href="voting.html" style="color: var(--cinema-light); text-decoration: none; font-weight: 600;">Vote</a>
+                    <a href="careers.html" style="color: var(--cinema-light); text-decoration: none; font-weight: 600;">Join Us</a>
+                </nav>
+                <a href="admin.html" style="color: var(--cinema-light); text-decoration: none; font-weight: 600;">Admin</a>
+            </div>
             <nav class="filter-nav">
                 <button class="filter-btn active" onclick="filterMovies('all')">All Movies</button>
                 <button class="filter-btn" onclick="filterMovies('today')">Today</button>
@@ -493,16 +576,27 @@
         </div>
     </section>
 
+    <!-- Firebase SDK (Firestore only) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Local Scripts -->
     <script src="config.js"></script>
+    <script src="js/firebase.js"></script>
+    <script src="js/firebaseDatabase.js"></script>
     <script src="js/fileStorage.js"></script>
     <script src="js/movieAPI.js"></script>
     <script src="js/scheduleManager.js"></script>
     <script>
-        // Trippy cursor effect
+        // Add smooth parallax effect to floating elements
         document.addEventListener('mousemove', (e) => {
-            const cursor = document.getElementById('trippyCursor');
-            cursor.style.left = e.clientX - 10 + 'px';
-            cursor.style.top = e.clientY - 10 + 'px';
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            document.querySelectorAll('.floating-element').forEach((el, index) => {
+                const speed = (index + 1) * 10;
+                el.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
+            });
         });
 
         // Main application class

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Minimal Login Test</title>
+</head>
+<body>
+    <h1>Minimal Login Test</h1>
+    
+    <form id="testForm">
+        <input type="password" id="codeword" placeholder="Enter codeword" value="goosefilms2024">
+        <button type="submit">Submit</button>
+    </form>
+    
+    <div id="result"></div>
+    
+    <script src="js/simpleAuth.js"></script>
+    <script>
+        console.log('Script started');
+        console.log('simpleAuth loaded:', !!window.simpleAuth);
+        
+        document.getElementById('testForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('Form submitted!');
+            
+            const codeword = document.getElementById('codeword').value;
+            console.log('Codeword:', codeword);
+            
+            if (window.simpleAuth) {
+                const result = window.simpleAuth.login(codeword);
+                console.log('Login result:', result);
+                
+                document.getElementById('result').innerHTML = result.success ? 
+                    'Success! <a href="admin.html">Go to Admin</a>' : 
+                    'Failed: ' + result.error;
+            } else {
+                document.getElementById('result').innerHTML = 'simpleAuth not loaded!';
+            }
+        });
+    </script>
+</body>
+</html>

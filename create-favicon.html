@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create GooseFilms Favicon</title>
+</head>
+<body>
+    <h1>GooseFilms Favicon</h1>
+    <p>Right-click the icon below and save it as "favicon.ico" in your GooseFilms folder:</p>
+    
+    <canvas id="favicon" width="32" height="32" style="border: 1px solid #ddd; image-rendering: pixelated; width: 128px; height: 128px;"></canvas>
+    
+    <br><br>
+    <button onclick="downloadFavicon()">Download favicon.ico</button>
+    
+    <script>
+        // Create a simple goose/film icon
+        const canvas = document.getElementById('favicon');
+        const ctx = canvas.getContext('2d');
+        
+        // Background
+        ctx.fillStyle = '#6B46C1'; // Cinema purple
+        ctx.fillRect(0, 0, 32, 32);
+        
+        // Film reel icon
+        ctx.fillStyle = '#F59E0B'; // Cinema gold
+        // Top holes
+        ctx.fillRect(6, 4, 4, 4);
+        ctx.fillRect(14, 4, 4, 4);
+        ctx.fillRect(22, 4, 4, 4);
+        // Middle strip
+        ctx.fillRect(4, 12, 24, 8);
+        // Bottom holes
+        ctx.fillRect(6, 24, 4, 4);
+        ctx.fillRect(14, 24, 4, 4);
+        ctx.fillRect(22, 24, 4, 4);
+        
+        // Goose silhouette in center
+        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath();
+        ctx.arc(16, 16, 3, 0, Math.PI * 2);
+        ctx.fill();
+        
+        function downloadFavicon() {
+            canvas.toBlob(function(blob) {
+                const link = document.createElement('a');
+                link.download = 'favicon.ico';
+                link.href = URL.createObjectURL(blob);
+                link.click();
+            });
+        }
+    </script>
+</body>
+</html>

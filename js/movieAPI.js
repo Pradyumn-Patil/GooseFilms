@@ -77,3 +77,4 @@ class MovieAPI {
 
 // Create global instance
 const movieAPI = new MovieAPI();
+window.movieAPI = movieAPI;

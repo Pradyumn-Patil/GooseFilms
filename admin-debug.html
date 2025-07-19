@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Debug</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .debug-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            background: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0051D5;
+        }
+        .movie-item {
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #f9f9f9;
+        }
+        .movie-item:hover {
+            background: #e9e9e9;
+        }
+        .schedule-form {
+            background: #f0f0f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+        .visible {
+            display: block !important;
+        }
+        pre {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Admin Panel Debug</h1>
+    
+    <div class="debug-section">
+        <h2>1. Test Movie Search</h2>
+        <input type="text" id="movieInput" placeholder="Search for a movie..." style="padding: 10px; width: 300px;">
+        <button onclick="searchMovies()">Search Movies</button>
+        <div id="searchResults"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>2. Test Schedule Form</h2>
+        <button onclick="testShowForm()">Show Schedule Form</button>
+        <button onclick="testHideForm()">Hide Schedule Form</button>
+        
+        <div id="testScheduleForm" class="schedule-form">
+            <h3>Schedule Movie</h3>
+            <div id="selectedMovie"></div>
+            <p>Theater: <select id="theater"><option>Theater 1</option></select></p>
+            <p>Time: <input type="time" value="19:00"></p>
+            <button onclick="alert('Schedule clicked!')">Schedule Movie</button>
+        </div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>3. Console Output</h2>
+        <pre id="console"></pre>
+    </div>
+
+    <!-- Load all required scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="config.js"></script>
+    <script src="js/firebase.js"></script>
+    <script src="js/simpleAuth.js"></script>
+    <script src="js/movieAPI.js"></script>
+    <script src="js/scheduleManager.js"></script>
+    <script src="js/adminPanel.js"></script>
+    
+    <script>
+        const consoleDiv = document.getElementById('console');
+        function log(msg) {
+            consoleDiv.textContent += msg + '\n';
+            console.log(msg);
+        }
+        
+        // Test functions
+        function testShowForm() {
+            const form = document.getElementById('testScheduleForm');
+            form.classList.add('visible');
+            log('Form shown');
+        }
+        
+        function testHideForm() {
+            const form = document.getElementById('testScheduleForm');
+            form.classList.remove('visible');
+            log('Form hidden');
+        }
+        
+        async function searchMovies() {
+            const query = document.getElementById('movieInput').value;
+            const resultsDiv = document.getElementById('searchResults');
+            
+            if (!query) {
+                log('No search query');
+                return;
+            }
+            
+            log(`Searching for: ${query}`);
+            resultsDiv.innerHTML = 'Searching...';
+            
+            try {
+                const movies = await movieAPI.searchMovies(query);
+                log(`Found ${movies.length} movies`);
+                
+                resultsDiv.innerHTML = '<h3>Search Results:</h3>';
+                movies.slice(0, 5).forEach((movie, index) => {
+                    const movieDiv = document.createElement('div');
+                    movieDiv.className = 'movie-item';
+                    movieDiv.innerHTML = `
+                        <strong>${movie.title}</strong> (${movie.release_date ? movie.release_date.substring(0, 4) : 'N/A'})
+                        <br>Rating: ${movie.vote_average || 'N/A'}
+                    `;
+                    movieDiv.onclick = () => selectMovie(movie);
+                    resultsDiv.appendChild(movieDiv);
+                });
+            } catch (error) {
+                log('Error: ' + error.message);
+                resultsDiv.innerHTML = 'Error searching movies';
+            }
+        }
+        
+        function selectMovie(movie) {
+            log(`Selected: ${movie.title}`);
+            const selectedDiv = document.getElementById('selectedMovie');
+            selectedDiv.innerHTML = `<strong>Selected:</strong> ${movie.title}`;
+            testShowForm();
+            
+            // Test the actual admin panel function
+            if (window.adminPanel) {
+                log('Testing adminPanel.selectMovieForScheduling...');
+                adminPanel.selectedMovie = movie;
+                adminPanel.showScheduleForm();
+                adminPanel.displaySelectedMovie();
+            } else {
+                log('adminPanel not initialized');
+            }
+        }
+        
+        // Initialize
+        window.addEventListener('DOMContentLoaded', async () => {
+            log('Debug page loaded');
+            log(`movieAPI available: ${!!window.movieAPI}`);
+            log(`adminPanel available: ${!!window.adminPanel}`);
+            log(`scheduleManager available: ${!!window.scheduleManager}`);
+            
+            // Login automatically for testing
+            if (window.simpleAuth) {
+                window.simpleAuth.login('goosefilms2024');
+                log('Auto-logged in for testing');
+            }
+            
+            // Initialize admin panel if not done
+            if (!window.adminPanel) {
+                window.adminPanel = new AdminPanel();
+                log('AdminPanel initialized');
+            }
+        });
+    </script>
+</body>
+</html>

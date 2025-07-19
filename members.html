@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GooseFilms — Founding Members</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --cinema-purple: #6B46C1;
+            --cinema-gold: #F59E0B;
+            --cinema-red: #DC2626;
+            --cinema-dark: #1F2937;
+            --cinema-darker: #111827;
+            --cinema-light: #F3F4F6;
+            --neon-glow: 0 0 20px rgba(245, 158, 11, 0.8);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--cinema-darker);
+            color: var(--cinema-light);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(107, 70, 193, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(245, 158, 11, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(220, 38, 38, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(31, 41, 55, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid var(--cinema-gold);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2.5rem;
+            color: var(--cinema-gold);
+            text-decoration: none;
+            text-shadow: var(--neon-glow);
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--cinema-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--cinema-gold);
+            text-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--cinema-gold);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: clamp(3rem, 8vw, 6rem);
+            color: var(--cinema-gold);
+            text-shadow: var(--neon-glow);
+            margin-bottom: 1rem;
+            letter-spacing: 4px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--cinema-purple);
+            margin-bottom: 2rem;
+        }
+
+        .film-strip {
+            height: 50px;
+            background: repeating-linear-gradient(
+                90deg,
+                #000 0px,
+                #000 10px,
+                var(--cinema-gold) 10px,
+                var(--cinema-gold) 20px
+            );
+            margin: 2rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .film-strip::before,
+        .film-strip::after {
+            content: '';
+            position: absolute;
+            top: 5px;
+            bottom: 5px;
+            width: 100%;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent 0px,
+                transparent 15px,
+                #000 15px,
+                #000 20px
+            );
+        }
+
+        /* Members Grid */
+        .members-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .member-card {
+            background: linear-gradient(135deg, rgba(107, 70, 193, 0.1), rgba(245, 158, 11, 0.1));
+            border: 2px solid var(--cinema-gold);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .member-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(245, 158, 11, 0.3);
+            border-color: var(--cinema-purple);
+        }
+
+        .member-card::before {
+            content: '🎬';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 100px;
+            opacity: 0.1;
+            transform: rotate(-15deg);
+        }
+
+        .member-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--cinema-purple), var(--cinema-gold));
+            margin: 0 auto 1.5rem;
+            position: relative;
+            overflow: hidden;
+            border: 4px solid var(--cinema-gold);
+        }
+
+        .member-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .member-avatar::after {
+            content: '👑';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 30px;
+            filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.8));
+        }
+
+        .member-name {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2rem;
+            color: var(--cinema-gold);
+            text-align: center;
+            margin-bottom: 0.5rem;
+            letter-spacing: 2px;
+        }
+
+        .member-title {
+            text-align: center;
+            color: var(--cinema-purple);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .member-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--cinema-gold);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--cinema-light);
+            opacity: 0.8;
+        }
+
+        .member-quote {
+            font-style: italic;
+            text-align: center;
+            margin: 1.5rem 0;
+            padding: 1rem;
+            border-left: 4px solid var(--cinema-gold);
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--cinema-light);
+        }
+
+        .member-genres {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .genre-tag {
+            background: var(--cinema-purple);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .genre-tag:hover {
+            background: var(--cinema-gold);
+            transform: scale(1.1);
+        }
+
+        .member-since {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(107, 70, 193, 0.2);
+            border-radius: 10px;
+            color: var(--cinema-light);
+            font-size: 0.875rem;
+        }
+
+        /* Fun Facts Section */
+        .fun-facts {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .fun-facts h2 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 3rem;
+            color: var(--cinema-gold);
+            margin-bottom: 2rem;
+            text-shadow: var(--neon-glow);
+        }
+
+        .facts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .fact-card {
+            background: rgba(245, 158, 11, 0.1);
+            border: 2px solid var(--cinema-gold);
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .fact-card:hover {
+            transform: scale(1.05);
+            background: rgba(245, 158, 11, 0.2);
+        }
+
+        .fact-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .fact-title {
+            font-weight: 600;
+            color: var(--cinema-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .fact-value {
+            font-size: 1.5rem;
+            color: var(--cinema-light);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .members-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero h1 {
+                font-size: 3rem;
+            }
+        }
+
+        /* Floating popcorn animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+
+        .floating-popcorn {
+            position: fixed;
+            font-size: 2rem;
+            animation: float 4s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body>
+    <!-- Load configuration file -->
+    <script src="js/members-config.js"></script>
+    <!-- Floating decorations -->
+    <div class="floating-popcorn" style="top: 10%; left: 5%; animation-delay: 0s;">🍿</div>
+    <div class="floating-popcorn" style="top: 20%; right: 10%; animation-delay: 1s;">🎬</div>
+    <div class="floating-popcorn" style="bottom: 30%; left: 8%; animation-delay: 2s;">🎭</div>
+    <div class="floating-popcorn" style="bottom: 10%; right: 5%; animation-delay: 3s;">🍿</div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">GOOSEFILMS</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="members.html">Members</a></li>
+                <li><a href="voting.html">Vote</a></li>
+                <li><a href="careers.html">Join Us</a></li>
+                <li><a href="admin.html">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1 id="heroTitle">FOUNDING MEMBERS</h1>
+        <p class="hero-subtitle" id="heroSubtitle">The Legends Who Started It All</p>
+        <div class="film-strip"></div>
+    </section>
+
+    <!-- Members Section -->
+    <section class="members-container">
+        <div class="members-grid" id="membersGrid">
+            <!-- Members will be populated from config file -->
+        </div>
+    </section>
+
+    <!-- Fun Facts Section -->
+    <section class="fun-facts">
+        <h2 id="statsTitle">CLUB STATISTICS</h2>
+        <div class="facts-grid" id="factsGrid">
+            <!-- Facts will be populated from config file -->
+        </div>
+    </section>
+
+    <script>
+        // Load members from configuration
+        function loadMembers() {
+            const membersGrid = document.getElementById('membersGrid');
+            const members = getAllMembers();
+            
+            if (!members || members.length === 0) {
+                membersGrid.innerHTML = `<p>${MEMBERS_CONFIG.messages.noMembersFound}</p>`;
+                return;
+            }
+            
+            membersGrid.innerHTML = members.map(member => createMemberCard(member)).join('');
+            
+            // Add interactive effects after cards are loaded
+            addInteractiveEffects();
+        }
+        
+        // Create member card HTML
+        function createMemberCard(member) {
+            const genreTags = member.favoriteGenres.map(genre => 
+                `<span class="genre-tag">${genre}</span>`
+            ).join('');
+            
+            return `
+                <div class="member-card" data-member-id="${member.id}">
+                    <div class="member-avatar">
+                        <img src="${member.avatar}" alt="${member.name}">
+                    </div>
+                    <h3 class="member-name">${member.name}</h3>
+                    <p class="member-title">${member.title}</p>
+                    ${MEMBERS_CONFIG.pageSettings.showStats ? `
+                    <div class="member-stats">
+                        <div class="stat">
+                            <span class="stat-number">${member.stats.moviesWatched}</span>
+                            <span class="stat-label">Movies Watched</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">${member.stats.attendance}%</span>
+                            <span class="stat-label">Attendance</span>
+                        </div>
+                    </div>
+                    ` : ''}
+                    ${MEMBERS_CONFIG.pageSettings.showQuotes ? `
+                    <p class="member-quote">"${member.quote}"</p>
+                    ` : ''}
+                    <div class="member-genres">
+                        ${genreTags}
+                    </div>
+                    ${MEMBERS_CONFIG.pageSettings.showMemberSince ? `
+                    <div class="member-since">🎬 ${member.memberSince}</div>
+                    ` : ''}
+                </div>
+            `;
+        }
+        
+        // Load fun facts from configuration
+        function loadFunFacts() {
+            const factsGrid = document.getElementById('factsGrid');
+            const facts = getFunFacts();
+            
+            factsGrid.innerHTML = facts.map(fact => `
+                <div class="fact-card">
+                    <div class="fact-icon">${fact.icon}</div>
+                    <div class="fact-title">${fact.title}</div>
+                    <div class="fact-value">${fact.value}</div>
+                </div>
+            `).join('');
+            
+            // Animate facts on scroll
+            animateFactsOnScroll();
+        }
+        
+        // Load page text from configuration
+        function loadPageText() {
+            document.getElementById('heroTitle').textContent = MEMBERS_CONFIG.messages.heroTitle;
+            document.getElementById('heroSubtitle').textContent = MEMBERS_CONFIG.messages.heroSubtitle;
+            document.getElementById('statsTitle').textContent = MEMBERS_CONFIG.messages.statsTitle;
+        }
+        
+        // Add interactive effects
+        function addInteractiveEffects() {
+            document.querySelectorAll('.member-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-10px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        }
+        
+        // Animate facts on scroll
+        function animateFactsOnScroll() {
+            if (!MEMBERS_CONFIG.pageSettings.animateOnScroll) return;
+            
+            const observerOptions = {
+                threshold: 0.5,
+                rootMargin: '0px 0px -100px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animation = 'fadeInUp 0.6s ease-out';
+                        entry.target.style.opacity = '1';
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.fact-card').forEach(card => {
+                card.style.opacity = '0';
+                observer.observe(card);
+            });
+        }
+
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Initialize page when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPageText();
+            loadMembers();
+            loadFunFacts();
+            
+            // Hide floating elements if disabled in config
+            if (!MEMBERS_CONFIG.pageSettings.showFloatingElements) {
+                document.querySelectorAll('.floating-popcorn').forEach(el => {
+                    el.style.display = 'none';
+                });
+            }
+        });
+    </script>
+</body>
+</html>
