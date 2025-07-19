@@ -443,6 +443,21 @@
         // Load members from configuration
         function loadMembers() {
             const membersGrid = document.getElementById('membersGrid');
+            
+            // Check if MEMBERS_CONFIG is loaded
+            if (typeof MEMBERS_CONFIG === 'undefined') {
+                console.error('MEMBERS_CONFIG not loaded!');
+                membersGrid.innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <h3>Loading members...</h3>
+                        <p>If this persists, try refreshing the page (Cmd/Ctrl + Shift + R)</p>
+                    </div>
+                `;
+                // Try loading again after a delay
+                setTimeout(loadMembers, 1000);
+                return;
+            }
+            
             const members = getAllMembers();
             
             if (!members || members.length === 0) {
@@ -458,26 +473,23 @@
         
         // Create member card HTML
         function createMemberCard(member) {
-            const genreTags = member.favoriteGenres.map(genre => 
-                `<span class="genre-tag">${genre}</span>`
-            ).join('');
-            
             return `
                 <div class="member-card" data-member-id="${member.id}">
-                    <div class="member-avatar">
-                        <img src="${member.avatar}" alt="${member.name}">
+                    <div class="member-avatar" style="font-size: 80px; display: flex; align-items: center; justify-content: center;">
+                        ${member.profileImg}
                     </div>
                     <h3 class="member-name">${member.name}</h3>
-                    <p class="member-title">${member.title}</p>
+                    <p class="member-title">${member.role}</p>
+                    <p style="color: #666; font-size: 0.9em;">📍 ${member.location}</p>
                     ${MEMBERS_CONFIG.pageSettings.showStats ? `
                     <div class="member-stats">
                         <div class="stat">
-                            <span class="stat-number">${member.stats.moviesWatched}</span>
+                            <span class="stat-number">${member.moviesWatched}</span>
                             <span class="stat-label">Movies Watched</span>
                         </div>
                         <div class="stat">
-                            <span class="stat-number">${member.stats.attendance}%</span>
-                            <span class="stat-label">Attendance</span>
+                            <span class="stat-number" style="font-size: 0.9em;">${member.speciality}</span>
+                            <span class="stat-label">Specialty</span>
                         </div>
                     </div>
                     ` : ''}
@@ -485,11 +497,14 @@
                     <p class="member-quote">"${member.quote}"</p>
                     ` : ''}
                     <div class="member-genres">
-                        ${genreTags}
+                        <span class="genre-tag">${member.favoriteGenre}</span>
                     </div>
                     ${MEMBERS_CONFIG.pageSettings.showMemberSince ? `
                     <div class="member-since">🎬 ${member.memberSince}</div>
                     ` : ''}
+                    <p style="margin-top: 15px; font-size: 0.85em; color: #666; line-height: 1.4;">
+                        ${member.bio}
+                    </p>
                 </div>
             `;
         }
