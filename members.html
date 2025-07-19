@@ -497,7 +497,10 @@
                     <p class="member-quote">"${member.quote}"</p>
                     ` : ''}
                     <div class="member-genres">
-                        <span class="genre-tag">${member.favoriteGenre}</span>
+                        ${member.favoriteGenres ? 
+                            member.favoriteGenres.map(genre => `<span class="genre-tag">${genre}</span>`).join('') :
+                            `<span class="genre-tag">${member.favoriteGenre}</span>`
+                        }
                     </div>
                     ${MEMBERS_CONFIG.pageSettings.showMemberSince ? `
                     <div class="member-since">🎬 ${member.memberSince}</div>
