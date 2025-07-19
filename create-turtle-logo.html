@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Turtle Logo</title>
+</head>
+<body>
+    <h1>GooseFilms Turtle Logo</h1>
+    <p>Here's a simple turtle logo created with SVG. Right-click and save as "turtle-logo.svg":</p>
+    
+    <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="background: white; border: 1px solid #ddd;">
+        <!-- Turtle Shell -->
+        <ellipse cx="100" cy="100" rx="60" ry="50" fill="#4a7c59" stroke="#2d5038" stroke-width="3"/>
+        
+        <!-- Shell Pattern -->
+        <path d="M 70 80 Q 100 70 130 80 Q 130 100 130 120 Q 100 130 70 120 Q 70 100 70 80" 
+              fill="#5a8d69" stroke="#2d5038" stroke-width="2"/>
+        <line x1="100" y1="70" x2="100" y2="130" stroke="#2d5038" stroke-width="2"/>
+        <line x1="70" y1="100" x2="130" y2="100" stroke="#2d5038" stroke-width="2"/>
+        
+        <!-- Head -->
+        <circle cx="100" cy="45" r="20" fill="#5a8d69" stroke="#2d5038" stroke-width="2"/>
+        
+        <!-- Eyes -->
+        <circle cx="92" cy="42" r="3" fill="#000"/>
+        <circle cx="108" cy="42" r="3" fill="#000"/>
+        
+        <!-- Smile -->
+        <path d="M 90 48 Q 100 52 110 48" stroke="#2d5038" stroke-width="2" fill="none"/>
+        
+        <!-- Legs -->
+        <ellipse cx="65" cy="90" rx="15" ry="10" fill="#5a8d69" stroke="#2d5038" stroke-width="2" transform="rotate(-30 65 90)"/>
+        <ellipse cx="135" cy="90" rx="15" ry="10" fill="#5a8d69" stroke="#2d5038" stroke-width="2" transform="rotate(30 135 90)"/>
+        <ellipse cx="65" cy="110" rx="15" ry="10" fill="#5a8d69" stroke="#2d5038" stroke-width="2" transform="rotate(30 65 110)"/>
+        <ellipse cx="135" cy="110" rx="15" ry="10" fill="#5a8d69" stroke="#2d5038" stroke-width="2" transform="rotate(-30 135 110)"/>
+        
+        <!-- Tail -->
+        <path d="M 100 150 L 100 165 L 95 160 M 100 165 L 105 160" stroke="#2d5038" stroke-width="2" fill="none"/>
+    </svg>
+    
+    <br><br>
+    <button onclick="downloadSVG()">Download as SVG</button>
+    
+    <script>
+        function downloadSVG() {
+            const svg = document.querySelector('svg');
+            const svgData = new XMLSerializer().serializeToString(svg);
+            const blob = new Blob([svgData], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'turtle-logo.svg';
+            link.click();
+        }
+    </script>
+</body>
+</html>

@@ -18,7 +18,7 @@
             --cinema-gold: #F59E0B;
             --cinema-red: #DC2626;
             --cinema-dark: #1F2937;
-            --cinema-darker: #111827;
+            --cinema-darker: #2a2535; /* Darker purplish-grey */
             --cinema-light: #F3F4F6;
             --neon-glow: 0 0 20px rgba(245, 158, 11, 0.8);
         }
@@ -406,7 +406,10 @@
     <!-- Navigation -->
     <nav>
         <div class="nav-container">
-            <a href="index.html" class="logo">GOOSEFILMS</a>
+            <a href="index.html" class="logo" style="display: flex; align-items: center; gap: 10px;">
+                <img src="assets/turtle-logo.svg" alt="GooseFilms Logo" style="height: 40px; width: 40px;">
+                GOOSEFILMS
+            </a>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="members.html">Members</a></li>
@@ -418,10 +421,11 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero">
-        <h1 id="heroTitle">FOUNDING MEMBERS</h1>
-        <p class="hero-subtitle" id="heroSubtitle">The Legends Who Started It All</p>
-        <div class="film-strip"></div>
+    <section class="hero" style="background-image: url('assets/unicorn.jpeg'); background-size: cover; background-position: center; position: relative;">
+        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(42, 37, 53, 0.8);"></div>
+        <h1 id="heroTitle" style="position: relative; z-index: 1;">FOUNDING MEMBERS</h1>
+        <p class="hero-subtitle" id="heroSubtitle" style="position: relative; z-index: 1;">The Legends Who Started It All</p>
+        <div class="film-strip" style="position: relative; z-index: 1;"></div>
     </section>
 
     <!-- Members Section -->
