@@ -78,13 +78,18 @@ class FileStorage {
             
             // Try to load from committed JSON file (works on both local and GitHub Pages)
             try {
-                const response = await fetch('./data/schedules.json');
+                // Add cache-busting parameter for GitHub Pages
+                const cacheBuster = new Date().getTime();
+                const response = await fetch(`./data/schedules.json?v=${cacheBuster}`);
                 if (response.ok) {
                     const schedules = await response.json();
-                    console.log('Loaded schedules from committed data file');
+                    console.log('Loaded schedules from committed data file:', schedules);
                     return schedules;
+                } else {
+                    console.log('Failed to fetch schedules.json, status:', response.status);
                 }
             } catch (fetchError) {
+                console.log('Error fetching schedule data:', fetchError);
                 console.log('No committed schedule data found, starting fresh');
             }
             

@@ -3,531 +3,1174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineClub Admin - Movie Scheduling</title>
+    <title>CineClub Admin — Movie Scheduling</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@100;200;300;400;500;600;700;800;900&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-            min-height: 100vh;
-            color: #333;
+        :root {
+            /* Light theme colors */
+            --apple-blue: #007AFF;
+            --apple-blue-dark: #0051D5;
+            --apple-blue-light: #5AC8FA;
+            --apple-red: #FF3B30;
+            --apple-red-dark: #D70015;
+            --apple-green: #34C759;
+            --apple-green-light: #30D158;
+            --apple-orange: #FF9500;
+            --apple-orange-light: #FF9F0A;
+            --apple-purple: #AF52DE;
+            --apple-purple-light: #BF5AF2;
+            --apple-pink: #FF2D92;
+            --apple-yellow: #FFCC00;
+            --apple-teal: #5AC8FA;
+            --apple-indigo: #5856D6;
+            
+            /* Gray scale */
+            --apple-gray: #F2F2F7;
+            --apple-gray-2: #E5E5EA;
+            --apple-gray-3: #D1D1D6;
+            --apple-gray-4: #C7C7CC;
+            --apple-gray-5: #AEAEB2;
+            --apple-gray-6: #8E8E93;
+            
+            /* Labels */
+            --apple-label: #000000;
+            --apple-secondary-label: #3C3C43;
+            --apple-tertiary-label: #3C3C4399;
+            --apple-quaternary-label: #3C3C4326;
+            
+            /* Backgrounds */
+            --apple-background: #FFFFFF;
+            --apple-secondary-background: #F2F2F7;
+            --apple-tertiary-background: #FFFFFF;
+            --apple-quaternary-background: #F2F2F7;
+            
+            /* Glass morphism */
+            --glass-background: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            
+            /* Shadows */
+            --apple-shadow-small: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            --apple-shadow: 0 4px 6px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.06);
+            --apple-shadow-medium: 0 10px 15px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05);
+            --apple-shadow-large: 0 20px 25px rgba(0,0,0,0.15), 0 10px 10px rgba(0,0,0,0.04);
+            --apple-shadow-xlarge: 0 25px 50px rgba(0,0,0,0.25);
+            
+            /* Radius */
+            --apple-radius-small: 8px;
+            --apple-radius-medium: 12px;
+            --apple-radius-large: 16px;
+            --apple-radius-xlarge: 20px;
+            --apple-radius-xxlarge: 24px;
+            
+            /* Gradients */
+            --gradient-blue: linear-gradient(135deg, #007AFF 0%, #5AC8FA 100%);
+            --gradient-purple: linear-gradient(135deg, #AF52DE 0%, #FF2D92 100%);
+            --gradient-orange: linear-gradient(135deg, #FF9500 0%, #FFCC00 100%);
+            --gradient-green: linear-gradient(135deg, #34C759 0%, #30D158 100%);
+            --gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
         }
 
-        .admin-container {
+        /* Dark mode variables */
+        [data-theme="dark"] {
+            --apple-label: #FFFFFF;
+            --apple-secondary-label: #EBEBF599;
+            --apple-tertiary-label: #EBEBF54D;
+            --apple-quaternary-label: #EBEBF529;
+            --apple-background: #000000;
+            --apple-secondary-background: #1C1C1E;
+            --apple-tertiary-background: #2C2C2E;
+            --apple-quaternary-background: #3A3A3C;
+            --apple-gray: #1C1C1E;
+            --apple-gray-2: #2C2C2E;
+            --apple-gray-3: #3A3A3C;
+            --apple-gray-4: #48484A;
+            --apple-gray-5: #636366;
+            --apple-gray-6: #8E8E93;
+            --glass-background: rgba(28, 28, 30, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--apple-secondary-background);
+            min-height: 100vh;
+            color: var(--apple-label);
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+            transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        /* Background pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(0, 122, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(175, 82, 222, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(52, 199, 89, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Header section with glass morphism */
+        .admin-header {
+            background: var(--glass-background);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+        }
+
+        .header-content {
             max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
-        }
-
-        .admin-header {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 30px;
-            text-align: center;
-            color: white;
-        }
-
-        .admin-nav {
             display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-bottom: 30px;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .nav-btn {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            padding: 12px 25px;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-title h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--apple-label);
+            background: var(--gradient-blue);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-title .subtitle {
+            font-size: 0.875rem;
+            color: var(--apple-secondary-label);
+            margin-left: 8px;
             font-weight: 500;
         }
 
-        .nav-btn:hover, .nav-btn.active {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.4);
+        /* Enhanced buttons with premium effects */
+        .logout-btn {
+            background: var(--gradient-purple);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: inherit;
+            box-shadow: var(--apple-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logout-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .logout-btn:hover::before {
+            left: 100%;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: var(--apple-shadow-large);
+        }
+
+        .logout-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        /* Dark mode toggle */
+        .theme-toggle {
+            background: var(--glass-background);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            margin-right: 12px;
+            width: 44px;
+            height: 28px;
+            position: relative;
+        }
+
+        .theme-toggle::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: var(--apple-blue);
+            border-radius: 50%;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--apple-shadow-small);
+        }
+
+        [data-theme="dark"] .theme-toggle::before {
+            transform: translateX(16px);
+            background: var(--apple-orange);
+        }
+
+        /* Navigation with enhanced glass effect */
+        .admin-nav {
+            background: var(--glass-background);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 16px 0;
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 4px;
+            background: var(--glass-background);
+            padding: 6px;
+            border-radius: var(--apple-radius-large);
+            width: fit-content;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--apple-shadow-small);
+        }
+
+        .nav-btn {
+            background: transparent;
+            color: var(--apple-secondary-label);
+            border: none;
+            padding: 10px 18px;
+            border-radius: var(--apple-radius-medium);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-glass);
+            opacity: 0;
+            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-btn:hover::before {
+            opacity: 1;
+        }
+
+        .nav-btn.active {
+            background: var(--apple-background);
+            color: var(--apple-label);
+            box-shadow: var(--apple-shadow);
+            transform: scale(1.02);
+        }
+
+        .nav-btn.active::before {
+            opacity: 0;
+        }
+
+        /* Main content with enhanced spacing */
+        .admin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px 20px;
         }
 
         .admin-content {
             display: grid;
-            grid-template-columns: 1fr 400px;
-            gap: 30px;
+            grid-template-columns: 1fr 420px;
+            gap: 32px;
         }
 
+        /* Calendar section with premium glass effect */
         .calendar-section {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            background: var(--glass-background);
+            border-radius: var(--apple-radius-xxlarge);
+            padding: 32px;
+            box-shadow: var(--apple-shadow-medium);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .movie-search-section {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        .calendar-section:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--apple-shadow-large);
         }
 
         .calendar-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
+        }
+
+        .calendar-header h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--apple-label);
+            background: var(--gradient-blue);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .month-nav {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 16px;
+            background: var(--glass-background);
+            padding: 8px 16px;
+            border-radius: var(--apple-radius-large);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
         }
 
         .month-nav button {
-            background: #3498db;
+            background: var(--gradient-blue);
             color: white;
             border: none;
-            padding: 8px 15px;
-            border-radius: 8px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
             cursor: pointer;
-            transition: background 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            box-shadow: var(--apple-shadow-small);
         }
 
         .month-nav button:hover {
-            background: #2980b9;
+            transform: scale(1.1);
+            box-shadow: var(--apple-shadow);
         }
 
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 1px;
-            background: #ddd;
-            border-radius: 8px;
-            overflow: hidden;
+        .month-nav button:active {
+            transform: scale(0.95);
         }
 
-        .calendar-day-header {
-            background: #34495e;
-            color: white;
-            padding: 10px;
+        .month-nav span {
+            font-weight: 700;
+            color: var(--apple-label);
+            min-width: 160px;
             text-align: center;
-            font-weight: bold;
-            font-size: 0.9em;
-        }
-
-        .calendar-day {
-            background: white;
-            min-height: 80px;
-            padding: 8px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-            position: relative;
-        }
-
-        .calendar-day:hover {
-            background: #f8f9fa;
-        }
-
-        .calendar-day.other-month {
-            background: #f5f5f5;
-            color: #999;
-        }
-
-        .calendar-day.selected {
-            background: #3498db;
-            color: white;
-        }
-
-        .calendar-day.has-movies {
-            background: #e8f5e8;
-        }
-
-        .calendar-day.has-movies.selected {
-            background: #27ae60;
-        }
-
-        .day-number {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .movie-indicator {
-            background: #e74c3c;
-            color: white;
-            font-size: 0.7em;
-            padding: 2px 5px;
-            border-radius: 10px;
-            display: inline-block;
-            margin: 1px;
-        }
-
-        .search-box {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            margin-bottom: 15px;
             font-size: 16px;
         }
 
+        /* Enhanced calendar grid */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            background: var(--apple-gray-4);
+            border-radius: var(--apple-radius-large);
+            overflow: hidden;
+            box-shadow: var(--apple-shadow-small);
+        }
+
+        .calendar-day-header {
+            background: var(--gradient-blue);
+            color: white;
+            padding: 16px 8px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .calendar-day {
+            background: var(--apple-background);
+            min-height: 90px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            border-radius: 4px;
+        }
+
+        .calendar-day::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-glass);
+            opacity: 0;
+            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 4px;
+        }
+
+        .calendar-day:hover::before {
+            opacity: 1;
+        }
+
+        .calendar-day:hover {
+            transform: scale(1.02);
+            box-shadow: var(--apple-shadow);
+        }
+
+        .calendar-day.other-month {
+            background: var(--apple-gray);
+            color: var(--apple-tertiary-label);
+        }
+
+        .calendar-day.selected {
+            background: var(--gradient-blue);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: var(--apple-shadow-medium);
+        }
+
+        .calendar-day.has-movies {
+            background: linear-gradient(135deg, rgba(52, 199, 89, 0.1) 0%, rgba(48, 209, 88, 0.1) 100%);
+            border-left: 4px solid var(--apple-green);
+            position: relative;
+        }
+
+        .calendar-day.has-movies::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: var(--apple-green);
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(52, 199, 89, 0.5);
+        }
+
+        .calendar-day.has-movies.selected {
+            background: var(--gradient-green);
+        }
+
+        .day-number {
+            font-weight: 700;
+            margin-bottom: 6px;
+            font-size: 15px;
+            z-index: 1;
+            position: relative;
+        }
+
+        .movie-indicator {
+            background: var(--gradient-orange);
+            color: white;
+            font-size: 9px;
+            padding: 3px 6px;
+            border-radius: 6px;
+            display: inline-block;
+            margin: 1px;
+            font-weight: 600;
+            line-height: 1;
+            box-shadow: var(--apple-shadow-small);
+            z-index: 1;
+            position: relative;
+        }
+
+        /* Enhanced movie search section */
+        .movie-search-section {
+            background: var(--glass-background);
+            border-radius: var(--apple-radius-xxlarge);
+            padding: 32px;
+            box-shadow: var(--apple-shadow-medium);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .movie-search-section:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--apple-shadow-large);
+        }
+
+        .movie-search-section h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--apple-label);
+            background: var(--gradient-purple);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Enhanced search box */
+        .search-box {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid var(--glass-border);
+            border-radius: var(--apple-radius-large);
+            margin-bottom: 20px;
+            font-size: 16px;
+            font-family: inherit;
+            background: var(--glass-background);
+            color: var(--apple-label);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--apple-shadow-small);
+            font-weight: 500;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--apple-blue);
+            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1), var(--apple-shadow);
+            transform: scale(1.02);
+        }
+
+        .search-box::placeholder {
+            color: var(--apple-tertiary-label);
+            font-weight: 400;
+        }
+
+        /* Search results with enhanced effects */
         .search-results {
-            max-height: 400px;
+            max-height: 450px;
             overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--apple-gray-5) transparent;
+        }
+
+        .search-results::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .search-results::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .search-results::-webkit-scrollbar-thumb {
+            background: var(--apple-gray-5);
+            border-radius: 3px;
         }
 
         .movie-search-item {
             display: flex;
-            gap: 15px;
-            padding: 15px;
-            border: 1px solid #eee;
-            border-radius: 8px;
-            margin-bottom: 10px;
+            gap: 16px;
+            padding: 16px;
+            border: 1px solid var(--glass-border);
+            border-radius: var(--apple-radius-large);
+            margin-bottom: 12px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--glass-background);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .movie-search-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 122, 255, 0.1), transparent);
+            transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .movie-search-item:hover::before {
+            left: 100%;
         }
 
         .movie-search-item:hover {
-            background: #f8f9fa;
-            border-color: #3498db;
+            background: var(--apple-background);
+            border-color: var(--apple-blue);
+            transform: translateY(-2px);
+            box-shadow: var(--apple-shadow-medium);
         }
 
         .movie-poster-small {
             width: 60px;
             height: 90px;
-            background: #ddd;
-            border-radius: 4px;
+            background: var(--gradient-blue);
+            border-radius: var(--apple-radius-medium);
             background-size: cover;
             background-position: center;
+            flex-shrink: 0;
+            box-shadow: var(--apple-shadow-small);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .movie-search-item:hover .movie-poster-small {
+            transform: scale(1.05);
         }
 
         .movie-info-small {
             flex: 1;
+            min-width: 0;
         }
 
         .movie-title-small {
-            font-weight: bold;
-            margin-bottom: 5px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--apple-label);
+            font-size: 15px;
+            line-height: 1.3;
         }
 
         .movie-year {
-            color: #666;
-            font-size: 0.9em;
-            margin-bottom: 5px;
+            color: var(--apple-secondary-label);
+            font-size: 13px;
+            margin-bottom: 6px;
+            font-weight: 500;
         }
 
         .movie-rating {
-            background: #f39c12;
+            background: var(--gradient-orange);
             color: white;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 0.8em;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
             display: inline-block;
+            box-shadow: var(--apple-shadow-small);
         }
 
+        /* Enhanced schedule form */
         .schedule-form {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
+            background: var(--gradient-glass);
+            padding: 24px;
+            border-radius: var(--apple-radius-large);
             margin-top: 20px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--apple-shadow-small);
+        }
+
+        .schedule-form h4 {
+            color: var(--apple-label);
+            margin-bottom: 20px;
+            font-weight: 700;
+            font-size: 18px;
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--apple-label);
+            font-size: 14px;
         }
 
         .form-group select,
         .form-group input {
             width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 14px 16px;
+            border: 2px solid var(--glass-border);
+            border-radius: var(--apple-radius-medium);
+            background: var(--glass-background);
+            color: var(--apple-label);
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
         }
 
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--apple-blue);
+            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+            transform: scale(1.02);
+        }
+
+        /* Enhanced time slots */
         .time-slots {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 10px;
+            gap: 10px;
+            margin-top: 12px;
         }
 
         .time-slot {
-            background: #ecf0f1;
-            padding: 5px 10px;
-            border-radius: 15px;
+            background: var(--glass-background);
+            border: 2px solid var(--glass-border);
+            padding: 10px 16px;
+            border-radius: 20px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.9em;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 13px;
+            color: var(--apple-label);
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .time-slot::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-blue);
+            opacity: 0;
+            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .time-slot:hover::before {
+            opacity: 0.1;
+        }
+
+        .time-slot:hover {
+            border-color: var(--apple-blue);
+            transform: scale(1.05);
         }
 
         .time-slot.selected {
-            background: #3498db;
+            background: var(--gradient-blue);
             color: white;
+            border-color: var(--apple-blue);
+            transform: scale(1.1);
+            box-shadow: var(--apple-shadow);
         }
 
+        .time-slot.selected::before {
+            opacity: 0;
+        }
+
+        /* Enhanced buttons */
         .btn {
-            background: #3498db;
+            background: var(--gradient-blue);
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
+            padding: 12px 24px;
+            border-radius: 25px;
             cursor: pointer;
-            transition: background 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 14px;
+            margin-right: 12px;
+            box-shadow: var(--apple-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
         }
 
         .btn:hover {
-            background: #2980b9;
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: var(--apple-shadow-large);
+        }
+
+        .btn:active {
+            transform: translateY(0) scale(0.98);
         }
 
         .btn-danger {
-            background: #e74c3c;
+            background: var(--gradient-purple);
         }
 
-        .btn-danger:hover {
-            background: #c0392b;
-        }
-
+        /* Scheduled movies with enhanced styling */
         .scheduled-movies {
-            margin-top: 20px;
+            margin-top: 24px;
+        }
+
+        .scheduled-movies h4 {
+            color: var(--apple-label);
+            margin-bottom: 16px;
+            font-weight: 700;
+            font-size: 18px;
         }
 
         .scheduled-movie-item {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            border-left: 4px solid #3498db;
+            background: var(--glass-background);
+            border: 1px solid var(--glass-border);
+            padding: 16px;
+            border-radius: var(--apple-radius-large);
+            margin-bottom: 12px;
+            border-left: 4px solid var(--apple-blue);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--apple-shadow-small);
         }
 
-        .logout-btn {
+        .scheduled-movie-item:hover {
+            background: var(--apple-background);
+            transform: translateX(4px);
+            box-shadow: var(--apple-shadow);
+        }
+
+        /* Loading animations */
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .loading-skeleton {
+            background: var(--apple-gray-2);
+            border-radius: var(--apple-radius-small);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loading-skeleton::before {
+            content: '';
             position: absolute;
-            top: 20px;
-            right: 20px;
-            background: #e74c3c;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 1.5s infinite;
         }
 
-        .statistics-view {
-            max-height: 70vh;
-            overflow-y: auto;
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 0.8;
+                transform: scale(1.02);
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        /* Enhanced responsive design */
+        @media (max-width: 768px) {
+            .admin-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .calendar-day {
+                min-height: 70px;
+                font-size: 13px;
+                padding: 8px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+                padding: 16px;
+            }
+
+            .nav-tabs {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .admin-container {
+                padding: 20px 16px;
+            }
+
+            .calendar-section,
+            .movie-search-section {
+                padding: 20px;
+            }
+
+            .month-nav {
+                gap: 12px;
+                padding: 6px 12px;
+            }
+
+            .month-nav span {
+                min-width: 120px;
+                font-size: 14px;
+            }
+        }
+
+        /* Focus states for accessibility */
+        .nav-btn:focus,
+        .logout-btn:focus,
+        .btn:focus,
+        .search-box:focus,
+        .theme-toggle:focus {
+            outline: 3px solid var(--apple-blue);
+            outline-offset: 2px;
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Statistics and Settings views with enhanced styling */
+        .statistics-view,
+        .settings-view {
+            display: none;
+            background: var(--glass-background);
+            border-radius: var(--apple-radius-xxlarge);
+            padding: 32px;
+            box-shadow: var(--apple-shadow-medium);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .statistics-view h3,
+        .settings-view h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 32px;
+            color: var(--apple-label);
+            background: var(--gradient-orange);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 20px;
-            margin-bottom: 30px;
+            margin-bottom: 32px;
         }
 
         .stat-card {
-            background: linear-gradient(45deg, #3498db, #2980b9);
-            color: white;
-            padding: 25px;
-            border-radius: 15px;
+            background: var(--glass-background);
+            border: 1px solid var(--glass-border);
+            padding: 24px;
+            border-radius: var(--apple-radius-large);
             text-align: center;
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--apple-shadow-small);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-glass);
+            opacity: 0;
+            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: var(--apple-shadow-large);
         }
 
         .stat-number {
-            font-size: 2.5em;
-            font-weight: bold;
-            margin-bottom: 5px;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            background: var(--gradient-blue);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            z-index: 1;
         }
 
         .stat-label {
-            font-size: 0.9em;
-            opacity: 0.9;
-        }
-
-        .theater-stats {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-
-        .theater-stats-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .theater-stat-item {
-            background: white;
-            padding: 10px 15px;
-            border-radius: 8px;
-            border-left: 4px solid #3498db;
-            flex: 1;
-            min-width: 200px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .theater-name {
-            font-weight: bold;
-            color: #2c3e50;
-        }
-
-        .theater-count {
-            background: #3498db;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 0.8em;
-        }
-
-        .export-section {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-
-        .export-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .import-section {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-            border: 2px dashed #ddd;
-        }
-
-        .help-text {
-            color: #666;
-            font-size: 0.9em;
-            margin-top: 5px;
-        }
-
-        .schedule-preview {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-        }
-
-        .schedule-text {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            max-height: 300px;
-            overflow-y: auto;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9em;
-            line-height: 1.4;
-        }
-
-        .settings-view {
-            max-height: 70vh;
-            overflow-y: auto;
+            font-size: 13px;
+            color: var(--apple-secondary-label);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 1;
         }
 
         .settings-section {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 32px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .settings-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
         }
 
         .settings-section h4 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 5px;
+            color: var(--apple-label);
+            margin-bottom: 20px;
+            font-weight: 700;
+            font-size: 20px;
         }
 
-        .theaters-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
+        /* Notification system */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--glass-background);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--apple-radius-large);
+            padding: 16px 20px;
+            backdrop-filter: blur(20px);
+            box-shadow: var(--apple-shadow-large);
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .theater-item {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #3498db;
+        .notification.show {
+            transform: translateX(0);
         }
 
-        .time-slots-display {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+        .notification.success {
+            border-left: 4px solid var(--apple-green);
         }
 
-        .time-slot-display {
-            background: #3498db;
-            color: white;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 0.9em;
+        .notification.error {
+            border-left: 4px solid var(--apple-red);
         }
 
-        @media (max-width: 768px) {
-            .admin-content {
-                grid-template-columns: 1fr;
-            }
-            
-            .calendar-day {
-                min-height: 60px;
-                font-size: 0.9em;
-            }
+        .notification.info {
+            border-left: 4px solid var(--apple-blue);
+        }
 
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .export-buttons {
-                flex-direction: column;
+        /* Ripple effect */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(0);
+            animation: ripple-animation 0.6s linear;
+            pointer-events: none;
+        }
+        
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Header -->
+    <header class="admin-header">
+        <div class="header-content">
+            <div class="header-title">
+                <h1>CineClub Admin</h1>
+                <span class="subtitle">Movie Scheduling</span>
+            </div>
+            <div style="display: flex; align-items: center;">
+                <div class="theme-toggle" onclick="toggleTheme()"></div>
+                <button class="logout-btn" onclick="logout()">Sign Out</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="admin-nav">
+        <div class="nav-content">
+            <div class="nav-tabs">
+                <button class="nav-btn active" onclick="switchTab('calendar')">Calendar</button>
+                <button class="nav-btn" onclick="switchTab('statistics')">Statistics</button>
+                <button class="nav-btn" onclick="switchTab('settings')">Settings</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
     <div class="admin-container">
-        <button class="logout-btn" onclick="logout()">Logout</button>
-        
-        <div class="admin-header">
-            <h1>🎬 CineClub Admin Panel</h1>
-            <p>Schedule movies and manage showtimes</p>
-        </div>
-
-        <div class="admin-nav">
-            <button class="nav-btn active" onclick="switchTab('calendar')">Calendar View</button>
-            <button class="nav-btn" onclick="switchTab('statistics')">Statistics</button>
-            <button class="nav-btn" onclick="switchTab('settings')">Settings</button>
-        </div>
-
         <div class="admin-content">
-            <div class="calendar-section">
+            <div class="calendar-section fade-in-up">
                 <div class="calendar-header">
-                    <h3>Movie Schedule Calendar</h3>
+                    <h3>Schedule Calendar</h3>
                     <div class="month-nav">
-                        <button onclick="changeMonth(-1)">◀</button>
+                        <button onclick="changeMonth(-1)">‹</button>
                         <span id="currentMonth"></span>
-                        <button onclick="changeMonth(1)">▶</button>
+                        <button onclick="changeMonth(1)">›</button>
                     </div>
                 </div>
                 
@@ -536,15 +1179,15 @@
                 </div>
 
                 <div class="scheduled-movies" id="scheduledMovies">
-                    <h4>Movies scheduled for <span id="selectedDate">today</span>:</h4>
+                    <h4>Movies for <span id="selectedDate">today</span></h4>
                     <div id="daySchedule">
                         <!-- Scheduled movies for selected day will appear here -->
                     </div>
                 </div>
             </div>
 
-            <div class="movie-search-section">
-                <h3>Search & Schedule Movies</h3>
+            <div class="movie-search-section fade-in-up">
+                <h3>Add Movies</h3>
                 <input type="text" class="search-box" id="movieSearch" placeholder="Search for movies...">
                 <div class="search-results" id="searchResults">
                     <!-- Search results will appear here -->
@@ -555,67 +1198,47 @@
                     <div id="selectedMovieInfo"></div>
                     
                     <div class="form-group">
-                        <label>Theater:</label>
+                        <label>Theater</label>
                         <select id="theaterSelect">
                             <!-- Theater options will be populated -->
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label>Select Show Times:</label>
+                        <label>Show Times</label>
                         <div class="time-slots" id="timeSlots">
                             <!-- Time slots will be populated -->
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <button class="btn" onclick="scheduleMovie()">Schedule Movie</button>
+                        <button class="btn" onclick="scheduleMovie()">Schedule</button>
                         <button class="btn btn-danger" onclick="cancelSchedule()">Cancel</button>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- Statistics View -->
         <div class="statistics-view" id="statisticsView" style="display: none;">
-            <h3>Statistics Overview</h3>
+            <h3>Analytics Overview</h3>
             <div class="stats-grid" id="statsGrid">
                 <!-- Statistics cards will be generated here -->
             </div>
-
-            <div class="theater-stats" id="theaterStats">
-                <h4>Theater Performance</h4>
-                <div class="theater-stats-list" id="theaterStatsList">
-                    <!-- Theater statistics will be populated here -->
-                </div>
-            </div>
-
-            <div class="export-section">
-                <h4>Export/Import Data</h4>
-                <div class="export-buttons">
-                    <button class="btn" onclick="exportData()">Export Data</button>
-                    <button class="btn" onclick="importData()">Import Data</button>
-                </div>
-
-                <div class="import-section" id="importSection" style="display: none;">
-                    <input type="file" id="importFile" accept=".json" style="display: none;">
-                    <button class="btn" onclick="document.getElementById('importFile').click()">Select File</button>
-                    <button class="btn" onclick="uploadData()" style="display: none;" id="uploadBtn">Upload</button>
-                    <span class="help-text">Import schedule data from a JSON file.</span>
-                </div>
-            </div>
         </div>
 
+        <!-- Settings View -->
         <div class="settings-view" id="settingsView" style="display: none;">
-            <h3>Settings</h3>
+            <h3>System Settings</h3>
             <div class="settings-section">
-                <h4>Theater Settings</h4>
+                <h4>Theater Configuration</h4>
                 <div class="theaters-list" id="theatersList">
                     <!-- Theater settings will be populated here -->
                 </div>
             </div>
 
             <div class="settings-section">
-                <h4>Time Slot Settings</h4>
+                <h4>Show Time Slots</h4>
                 <div class="time-slots-display" id="timeSlotsDisplay">
                     <!-- Time slot settings will be populated here -->
                 </div>
@@ -623,10 +1246,143 @@
         </div>
     </div>
 
+    <!-- Notification container -->
+    <div id="notification-container"></div>
+
     <script src="config.js"></script>
     <script src="js/fileStorage.js"></script>
     <script src="js/movieAPI.js"></script>
     <script src="js/scheduleManager.js"></script>
     <script src="js/adminPanel.js"></script>
+    
+    <script>
+        // Enhanced theme toggle functionality
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            // Add smooth transition effect
+            document.body.style.transition = 'background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+            
+            setTimeout(() => {
+                document.body.style.transition = '';
+            }, 300);
+        }
+
+        // Load saved theme on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        });
+
+        // Enhanced notification system
+        function showNotification(message, type = 'info', duration = 4000) {
+            const container = document.getElementById('notification-container');
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="font-weight: 600; color: var(--apple-label);">${message}</div>
+                    <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; color: var(--apple-secondary-label); cursor: pointer; font-size: 18px; padding: 0; width: 20px; height: 20px;">×</button>
+                </div>
+            `;
+            
+            container.appendChild(notification);
+            
+            // Trigger animation
+            setTimeout(() => notification.classList.add('show'), 100);
+            
+            // Auto remove
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, duration);
+        }
+
+        // Enhanced loading states
+        function showLoadingSkeleton(container, count = 3) {
+            const skeletons = Array.from({length: count}, () => `
+                <div class="loading-skeleton" style="height: 80px; margin-bottom: 12px; border-radius: 12px;"></div>
+            `).join('');
+            container.innerHTML = skeletons;
+        }
+
+        // Add smooth page transitions
+        function switchTab(tabName) {
+            // Remove active class from all nav buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+            
+            // Hide all views with fade out
+            const views = ['calendar', 'statistics', 'settings'];
+            views.forEach(view => {
+                const element = document.getElementById(view === 'calendar' ? 'admin-content' : `${view}View`);
+                if (element) {
+                    element.style.opacity = '0';
+                    element.style.transform = 'translateY(20px)';
+                }
+            });
+            
+            // Show selected view with fade in after delay
+            setTimeout(() => {
+                views.forEach(view => {
+                    const element = document.getElementById(view === 'calendar' ? 'admin-content' : `${view}View`);
+                    if (element) {
+                        if (view === tabName) {
+                            element.style.display = view === 'calendar' ? 'grid' : 'block';
+                            setTimeout(() => {
+                                element.style.opacity = '1';
+                                element.style.transform = 'translateY(0)';
+                            }, 50);
+                        } else {
+                            element.style.display = 'none';
+                        }
+                    }
+                });
+            }, 150);
+        }
+
+        // Initialize enhanced interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add intersection observer for animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in-up');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            // Observe all major sections
+            document.querySelectorAll('.calendar-section, .movie-search-section, .stat-card').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Add ripple effect to buttons
+            document.querySelectorAll('.btn, .nav-btn, .time-slot').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    
+                    ripple.style.width = ripple.style.height = size + 'px';
+                    ripple.style.left = x + 'px';
+                    ripple.style.top = y + 'px';
+                    ripple.classList.add('ripple');
+                    
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => ripple.remove(), 600);
+                });
+            });
+        });
+    </script>
 </body>
 </html>

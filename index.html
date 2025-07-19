@@ -3,303 +3,508 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineClub - Movie Showtimes</title>
+    <title>CineClub — Movie Showtimes</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@100;200;300;400;500;600;700;800;900&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        :root {
+            --apple-blue: #007AFF;
+            --apple-blue-dark: #0051D5;
+            --apple-gray: #F2F2F7;
+            --apple-gray-2: #E5E5EA;
+            --apple-gray-3: #D1D1D6;
+            --apple-gray-4: #C7C7CC;
+            --apple-gray-5: #AEAEB2;
+            --apple-gray-6: #8E8E93;
+            --apple-label: #000000;
+            --apple-secondary-label: #3C3C43;
+            --apple-tertiary-label: #3C3C4399;
+            --apple-background: #FFFFFF;
+            --apple-secondary-background: #F2F2F7;
+            --apple-tertiary-background: #FFFFFF;
+            --apple-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            --apple-shadow-large: 0 10px 25px rgba(0,0,0,0.15), 0 4px 10px rgba(0,0,0,0.08);
+            --apple-radius-small: 8px;
+            --apple-radius-medium: 12px;
+            --apple-radius-large: 16px;
+            --apple-radius-xlarge: 20px;
+        }
+
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--apple-background);
             min-height: 100vh;
-            color: #333;
+            color: var(--apple-label);
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        /* Hero section with Apple-style gradient */
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             position: relative;
+            overflow: hidden;
+            min-height: 60vh;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.1)),
+                url('assets/lev.jpeg') center top/cover;
+            background-blend-mode: overlay;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            padding: 60px 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .logo-container {
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: url('assets/unicorn.jpeg') center/cover;
+            border-radius: 50%;
+            margin: 0 auto;
+            box-shadow: var(--apple-shadow-large);
+            border: 2px solid rgba(255,255,255,0.2);
         }
 
         h1 {
-            color: white;
-            font-size: 3em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+            line-height: 1.1;
         }
 
-        .subtitle {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 1.2em;
-            font-weight: 300;
+        .hero-subtitle {
+            font-size: 1.375rem;
+            font-weight: 400;
+            opacity: 0.9;
+            margin-bottom: 32px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.4;
         }
 
         .admin-link {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.2);
+            top: 24px;
+            right: 24px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
             color: white;
             text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
             font-weight: 500;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         .admin-link:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-1px);
+        }
+
+        /* Main content container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation section */
+        .nav-section {
+            padding: 32px 0;
+            background: var(--apple-background);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--apple-gray-4);
+        }
+
+        .filter-nav {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: var(--apple-gray);
+            color: var(--apple-label);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 15px;
+            font-weight: 500;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .filter-btn:hover {
+            background: var(--apple-gray-2);
+            transform: translateY(-1px);
+        }
+
+        .filter-btn.active {
+            background: var(--apple-blue);
+            color: white;
+        }
+
+        /* Movies section */
+        .movies-section {
+            padding: 48px 0 80px;
+            background: var(--apple-background);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 32px;
+            text-align: center;
+            color: var(--apple-label);
         }
 
         .movies-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 30px;
-            margin-top: 40px;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 24px;
+            margin-top: 32px;
         }
 
         .movie-card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
+            background: var(--apple-background);
+            border-radius: var(--apple-radius-large);
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: var(--apple-shadow);
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border: 1px solid var(--apple-gray-3);
         }
 
         .movie-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transform: translateY(-4px);
+            box-shadow: var(--apple-shadow-large);
         }
 
         .movie-poster {
             width: 100%;
-            height: 300px;
-            background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+            height: 240px;
+            background: linear-gradient(135deg, var(--apple-blue), var(--apple-blue-dark));
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2em;
-            color: white;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-            background-size: cover;
-            background-position: center;
             position: relative;
+            overflow: hidden;
         }
 
         .movie-poster img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 0;
         }
 
         .poster-fallback {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 3em;
+            font-size: 2.5rem;
+            color: white;
+            opacity: 0.8;
         }
 
         .movie-info {
-            padding: 25px;
+            padding: 20px;
         }
 
         .movie-title {
-            font-size: 1.5em;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #2c3e50;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--apple-label);
+            line-height: 1.3;
         }
 
         .movie-genre {
-            color: #7f8c8d;
-            font-size: 0.9em;
-            margin-bottom: 15px;
+            font-size: 14px;
+            color: var(--apple-secondary-label);
+            margin-bottom: 12px;
             text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .showtime-section {
-            margin-top: 20px;
-        }
-
-        .showtime-date {
-            font-weight: bold;
-            color: #34495e;
-            margin-bottom: 10px;
-            font-size: 1.1em;
-        }
-
-        .showtime-details {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .time-slot {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 25px;
-            font-size: 0.9em;
+            letter-spacing: 0.5px;
             font-weight: 500;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            transition: transform 0.2s ease;
-        }
-
-        .time-slot:hover {
-            transform: scale(1.05);
-        }
-
-        .location {
-            background: rgba(52, 73, 94, 0.1);
-            padding: 10px;
-            border-radius: 10px;
-            margin-top: 10px;
-            border-left: 4px solid #3498db;
-        }
-
-        .location-name {
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 5px;
-        }
-
-        .location-address {
-            color: #7f8c8d;
-            font-size: 0.9em;
-        }
-
-        .filter-section {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        .filter-btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            padding: 10px 20px;
-            border-radius: 25px;
-            margin: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
-
-        .filter-btn:hover, .filter-btn.active {
-            background: rgba(255, 255, 255, 0.3);
-            border-color: rgba(255, 255, 255, 0.5);
-            transform: translateY(-2px);
-        }
-
-        .loading {
-            text-align: center;
-            color: white;
-            font-size: 1.5em;
-            margin: 40px 0;
-        }
-
-        .error {
-            text-align: center;
-            color: #ff6b6b;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
         }
 
         .movie-rating {
-            background: #f39c12;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 0.8em;
-            font-weight: bold;
             display: inline-block;
-            margin-bottom: 10px;
+            background: linear-gradient(135deg, #FF9500, #FF6B00);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 12px;
         }
 
         .movie-overview {
-            color: #666;
-            font-size: 0.9em;
-            line-height: 1.4;
-            margin: 10px 0;
+            font-size: 15px;
+            color: var(--apple-secondary-label);
+            line-height: 1.5;
+            margin-bottom: 16px;
             display: -webkit-box;
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
 
+        .showtime-section {
+            margin-top: 16px;
+            padding: 16px;
+            background: var(--apple-gray);
+            border-radius: var(--apple-radius-medium);
+        }
+
+        .showtime-date {
+            font-weight: 600;
+            color: var(--apple-label);
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .showtime-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .time-slot {
+            background: var(--apple-blue);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: pointer;
+        }
+
+        .time-slot:hover {
+            background: var(--apple-blue-dark);
+            transform: scale(1.05);
+        }
+
+        .location {
+            background: rgba(0, 122, 255, 0.05);
+            padding: 12px;
+            border-radius: var(--apple-radius-small);
+            margin-top: 8px;
+            border-left: 3px solid var(--apple-blue);
+        }
+
+        .location-name {
+            font-weight: 600;
+            color: var(--apple-label);
+            margin-bottom: 4px;
+            font-size: 15px;
+        }
+
+        .location-address {
+            color: var(--apple-secondary-label);
+            font-size: 14px;
+        }
+
+        /* Loading and error states */
+        .loading {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--apple-secondary-label);
+            font-size: 18px;
+        }
+
+        .loading::before {
+            content: '';
+            display: block;
+            width: 24px;
+            height: 24px;
+            margin: 0 auto 16px;
+            border: 2px solid var(--apple-gray-3);
+            border-top: 2px solid var(--apple-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(255, 59, 48, 0.05);
+            border-radius: var(--apple-radius-large);
+            margin: 20px 0;
+            border: 1px solid rgba(255, 59, 48, 0.1);
+            color: #D70015;
+        }
+
+        /* Responsive design */
         @media (max-width: 768px) {
+            .hero-content {
+                padding: 40px 20px;
+            }
+            
             .movies-grid {
                 grid-template-columns: 1fr;
-                gap: 20px;
+                gap: 16px;
             }
             
-            h1 {
-                font-size: 2em;
-            }
-            
-            .container {
-                padding: 10px;
-            }
-
             .admin-link {
                 position: static;
                 display: inline-block;
-                margin-top: 10px;
+                margin-top: 16px;
+            }
+
+            .filter-nav {
+                gap: 4px;
+            }
+
+            .filter-btn {
+                padding: 6px 12px;
+                font-size: 14px;
             }
         }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .hero-content {
+                padding: 32px 16px;
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Focus states for accessibility */
+        .filter-btn:focus,
+        .admin-link:focus,
+        .time-slot:focus {
+            outline: 2px solid var(--apple-blue);
+            outline-offset: 2px;
+        }
+
+        /* Enhanced visual hierarchy */
+        .featured-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: linear-gradient(135deg, #FF3B30, #FF9500);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Subtle animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .movie-card {
+            animation: fadeInUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .movie-card:nth-child(1) { animation-delay: 0.1s; }
+        .movie-card:nth-child(2) { animation-delay: 0.2s; }
+        .movie-card:nth-child(3) { animation-delay: 0.3s; }
+        .movie-card:nth-child(4) { animation-delay: 0.4s; }
+        .movie-card:nth-child(5) { animation-delay: 0.5s; }
+        .movie-card:nth-child(6) { animation-delay: 0.6s; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <a href="login.html" class="admin-link">🔧 Admin Panel</a>
-            <h1>🎬 CineClub</h1>
-            <p class="subtitle">Your Ultimate Movie Experience</p>
-        </header>
-
-        <div class="filter-section">
-            <button class="filter-btn active" onclick="filterMovies('all')">All Movies</button>
-            <button class="filter-btn" onclick="filterMovies('today')">Today</button>
-            <button class="filter-btn" onclick="filterMovies('tomorrow')">Tomorrow</button>
-            <button class="filter-btn" onclick="filterMovies('weekend')">Weekend</button>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <a href="login.html" class="admin-link">Admin</a>
+        <div class="hero-content">
+            <div class="logo-container">
+                <div class="logo"></div>
+            </div>
+            <h1>CineClub</h1>
+            <p class="hero-subtitle">Experience cinema like never before with our premium movie selection and state-of-the-art theaters.</p>
         </div>
+    </section>
 
-        <div class="movies-grid" id="moviesGrid">
-            <!-- Movies will be populated by JavaScript -->
+    <!-- Navigation -->
+    <section class="nav-section">
+        <div class="container">
+            <nav class="filter-nav">
+                <button class="filter-btn active" onclick="filterMovies('all')">All Movies</button>
+                <button class="filter-btn" onclick="filterMovies('today')">Today</button>
+                <button class="filter-btn" onclick="filterMovies('tomorrow')">Tomorrow</button>
+                <button class="filter-btn" onclick="filterMovies('weekend')">Weekend</button>
+            </nav>
         </div>
-    </div>
+    </section>
+
+    <!-- Movies Section -->
+    <section class="movies-section">
+        <div class="container">
+            <h2 class="section-title">Now Showing</h2>
+            <div class="movies-grid" id="moviesGrid">
+                <!-- Movies will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
 
     <script src="config.js"></script>
     <script src="js/fileStorage.js"></script>
     <script src="js/movieAPI.js"></script>
     <script src="js/scheduleManager.js"></script>
     <script>
+        // Trippy cursor effect
+        document.addEventListener('mousemove', (e) => {
+            const cursor = document.getElementById('trippyCursor');
+            cursor.style.left = e.clientX - 10 + 'px';
+            cursor.style.top = e.clientY - 10 + 'px';
+        });
+
         // Main application class
         class CineClubApp {
             constructor() {
@@ -320,7 +525,7 @@
                     this.displayMovies(this.movies);
                 } catch (error) {
                     console.error('Error initializing app:', error);
-                    this.showError('Failed to load movies. Please check your internet connection.');
+                    this.showError('Unable to load movies. Please check your connection.');
                 }
             }
 
@@ -335,6 +540,7 @@
                 const allSchedules = scheduleManager.schedules;
                 
                 console.log('All schedules loaded:', allSchedules); // Debug log
+                console.log('Environment:', fileStorage.getEnvironmentInfo()); // Debug log
                 
                 if (Object.keys(allSchedules).length === 0) {
                     console.log('No scheduled movies found, falling back to TMDB'); // Debug log
@@ -432,20 +638,21 @@
                     <div class="movie-card">
                         <div class="movie-poster" style="${posterPath ? `background-image: url('${posterPath}');` : ''}">
                             ${!movie.poster_path ? '<div class="poster-fallback">🎬</div>' : ''}
+                            ${movie.vote_average > 8 ? '<div class="featured-badge">Featured</div>' : ''}
                         </div>
                         <div class="movie-info">
-                            <h2 class="movie-title">${movie.title}</h2>
+                            <h3 class="movie-title">${movie.title}</h3>
                             <div class="movie-genre">${genreText}</div>
-                            <div class="movie-rating">⭐ ${movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}</div>
-                            <div class="movie-overview">${movie.overview || 'No description available.'}</div>
+                            <div class="movie-rating">★ ${movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}</div>
+                            <div class="movie-overview">${movie.overview || 'Experience this captivating story on the big screen.'}</div>
                             ${movie.showtimes.map(showtime => `
                                 <div class="showtime-section">
                                     <div class="showtime-date">${showtime.date}</div>
                                     <div class="showtime-details">
-                                        ${showtime.times.map(time => `<span class="time-slot">${time}</span>`).join('')}
+                                        ${showtime.times.map(time => `<div class="time-slot">${time}</div>`).join('')}
                                     </div>
                                     <div class="location">
-                                        <div class="location-name">📍 ${showtime.location.name}</div>
+                                        <div class="location-name">${showtime.location.name}</div>
                                         <div class="location-address">${showtime.location.address}</div>
                                     </div>
                                 </div>
@@ -460,8 +667,7 @@
                 if (moviesToShow.length === 0) {
                     grid.innerHTML = `
                         <div class="loading">
-                            <h3>No movies scheduled</h3>
-                            <p>Please contact the administrator to schedule movies.</p>
+                            Loading movies...
                         </div>
                     `;
                     return;
@@ -503,9 +709,8 @@
                 const grid = document.getElementById('moviesGrid');
                 grid.innerHTML = `
                     <div class="error">
-                        <h3>Oops! Something went wrong</h3>
+                        <h3>Something went wrong</h3>
                         <p>${message}</p>
-                        <p>Please try refreshing the page.</p>
                     </div>
                 `;
             }
