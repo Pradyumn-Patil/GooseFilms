@@ -159,6 +159,12 @@ function getFunFacts() {
     ];
 }
 
+// Make functions available globally
+window.getAllMembers = getAllMembers;
+window.getMemberById = getMemberById;
+window.getMemberByName = getMemberByName;
+window.getFunFacts = getFunFacts;
+
 // Export for use in other files
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = MEMBERS_CONFIG;
