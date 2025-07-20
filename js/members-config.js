@@ -21,7 +21,7 @@ const MEMBERS_CONFIG = {
             name: "Prada",
             role: "Tech Mastermind",
             location: "India",
-            profileImg: "assets/jude.jpeg",
+            profileImg: "assets/prada.jpeg",
             speciality: "Sci-Fi & Tech Thrillers",
             favoriteGenre: "Science Fiction",
             favoriteGenres: ["Science Fiction", "Tech Thrillers", "Cyberpunk"],
@@ -71,6 +71,20 @@ const MEMBERS_CONFIG = {
             memberSince: "Founding Member",
             quote: "Sometimes we need therapy after a Gaspar Noé film.",
             bio: "German representative and psychology student who ensures our mental well-being after intense movie sessions. Cati is there to treat members in case of mental breakdowns from particularly disturbing films, and her insights into psychological thrillers add depth to our discussions."
+        },
+        {
+            id: 6,
+            name: "Lev",
+            role: "Former KGB Film Analyst",
+            location: "Russia 🇷🇺",
+            profileImg: "assets/lev.jpeg",
+            speciality: "Soviet & Russian Cinema",
+            favoriteGenre: "Cold War Thrillers",
+            favoriteGenres: ["Soviet Cinema", "Cold War Thrillers", "Russian Art Films"],
+            moviesWatched: 0,
+            memberSince: "Founding Member",
+            quote: "In Soviet Russia, movie watches you.",
+            bio: "A mysterious Russian spy who defected to GooseFilms, bringing with him classified knowledge of Soviet-era cinema and an unparalleled collection of rare Eastern Bloc films. Lev's shadowy past as a KGB film analyst gives him unique insights into propaganda films and psychological warfare through cinema. His defection story remains classified, but his passion for film is undeniable."
         }
     ],
     
@@ -98,7 +112,7 @@ const MEMBERS_CONFIG = {
         totalMoviesWatched: 847,
         marathonsHosted: 156,
         genresExplored: 42,
-        countriesRepresented: 5
+        countriesRepresented: 6
     }
 };
 
@@ -117,6 +131,32 @@ function getMemberByName(name) {
     return MEMBERS_CONFIG.members.find(member => 
         member.name.toLowerCase() === name.toLowerCase()
     );
+}
+
+// Helper function to get fun facts
+function getFunFacts() {
+    return [
+        {
+            icon: "🎬",
+            title: "Total Movies",
+            value: MEMBERS_CONFIG.clubStats.totalMoviesWatched
+        },
+        {
+            icon: "🍿",
+            title: "Movie Marathons",
+            value: MEMBERS_CONFIG.clubStats.marathonsHosted
+        },
+        {
+            icon: "🎭",
+            title: "Genres Explored",
+            value: MEMBERS_CONFIG.clubStats.genresExplored
+        },
+        {
+            icon: "🌍",
+            title: "Countries",
+            value: MEMBERS_CONFIG.clubStats.countriesRepresented
+        }
+    ];
 }
 
 // Export for use in other files
