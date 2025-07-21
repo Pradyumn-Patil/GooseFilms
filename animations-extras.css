@@ -1,0 +1,344 @@
+/* Additional Animation Styles for GooseFilms */
+
+/* ===== Page Transitions ===== */
+body {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+body.page-loaded {
+  opacity: 1;
+}
+
+/* ===== Ripple Effect Styles ===== */
+.ripple-effect {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  transform: scale(0);
+  animation: ripple-animation 0.6s ease-out;
+  pointer-events: none;
+}
+
+@keyframes ripple-animation {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* ===== Mouse Trail ===== */
+.mouse-trail {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.6) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: screen;
+  transform: translate(-50%, -50%);
+}
+
+/* ===== Loading Overlay ===== */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  backdrop-filter: blur(10px);
+}
+
+.loading-spinner .spinner {
+  width: 60px;
+  height: 60px;
+  border: 3px solid rgba(255, 215, 0, 0.3);
+  border-top-color: #FFD700;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loading-overlay.fade-out {
+  animation: fadeOut 0.3s ease forwards;
+}
+
+/* ===== Navbar Transitions ===== */
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  transition: transform 0.3s ease-out;
+  z-index: 1000;
+}
+
+/* ===== Image Loading Effects ===== */
+img {
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+img.loaded {
+  opacity: 1;
+}
+
+/* ===== 3D Card Tilt ===== */
+.tilt-card {
+  transition: transform 0.1s ease;
+  transform-style: preserve-3d;
+}
+
+.tilt-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.1) 45%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tilt-card:hover::before {
+  opacity: 1;
+}
+
+/* ===== Scroll Progress Bar ===== */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  background: linear-gradient(90deg, #FFD700, #9B59B6);
+  z-index: 10001;
+  transition: width 0.1s ease;
+}
+
+/* ===== Back to Top Button ===== */
+.back-to-top {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 50px;
+  height: 50px;
+  background: #9B59B6;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(100px);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(155, 89, 182, 0.4);
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.back-to-top:hover {
+  background: #8E44AD;
+  transform: translateY(-5px);
+  box-shadow: 0 6px 30px rgba(155, 89, 182, 0.6);
+}
+
+/* ===== Movie Card Enhanced Animations ===== */
+.movie-card {
+  position: relative;
+  overflow: hidden;
+  transform: translateZ(0);
+  transition: all 0.3s ease;
+}
+
+.movie-card::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transform: rotate(45deg) translateX(-100%);
+  transition: transform 0.6s;
+}
+
+.movie-card:hover::after {
+  transform: rotate(45deg) translateX(100%);
+}
+
+/* ===== Form Input Animations ===== */
+.form-input {
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.form-input input,
+.form-input textarea {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-bottom: 2px solid #333;
+  background: transparent;
+  transition: border-color 0.3s;
+}
+
+.form-input label {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  transition: all 0.3s;
+  pointer-events: none;
+  color: #666;
+}
+
+.form-input input:focus,
+.form-input textarea:focus {
+  outline: none;
+  border-bottom-color: #FFD700;
+}
+
+.form-input input:focus + label,
+.form-input input:not(:placeholder-shown) + label,
+.form-input textarea:focus + label,
+.form-input textarea:not(:placeholder-shown) + label {
+  top: -20px;
+  left: 0;
+  font-size: 12px;
+  color: #FFD700;
+}
+
+/* ===== Success/Error Animations ===== */
+@keyframes checkmark {
+  0% {
+    stroke-dashoffset: 100;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes error-shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-5px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(5px);
+  }
+}
+
+.success-animation {
+  animation: checkmark 0.6s ease forwards;
+}
+
+.error-animation {
+  animation: error-shake 0.5s ease;
+}
+
+/* ===== Particle Effects ===== */
+.particle-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #FFD700;
+  border-radius: 50%;
+  opacity: 0.8;
+  animation: particle-float 10s infinite;
+}
+
+@keyframes particle-float {
+  0% {
+    transform: translateY(100vh) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-100px) translateX(100px);
+    opacity: 0;
+  }
+}
+
+/* ===== Cinema Curtain Effect ===== */
+.cinema-curtain {
+  position: fixed;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, #1a0000, #2a0000);
+  z-index: 9999;
+  transform-origin: top;
+}
+
+.cinema-curtain.left {
+  left: 0;
+  animation: curtainSlideLeft 1.5s ease-out forwards;
+}
+
+.cinema-curtain.right {
+  right: 0;
+  animation: curtainSlideRight 1.5s ease-out forwards;
+}
+
+@keyframes curtainSlideLeft {
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes curtainSlideRight {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* ===== Skeleton Loading Improvements ===== */
+.skeleton-text {
+  height: 16px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+}
+
+.skeleton-title {
+  height: 32px;
+  margin-bottom: 16px;
+  border-radius: 4px;
+}
+
+.skeleton-image {
+  height: 200px;
+  border-radius: 8px;
+}
+
+.skeleton-button {
+  height: 44px;
+  width: 120px;
+  border-radius: 22px;
+}

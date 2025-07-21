@@ -1,0 +1,264 @@
+/* GooseFilms Loading States and Performance Optimizations */
+
+/* ===== Preloader ===== */
+.preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--cinema-darker, #111827);
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.preloader.fade-out {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.preloader-content {
+    text-align: center;
+}
+
+.preloader-logo {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.preloader-text {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2rem;
+    color: var(--cinema-gold, #F59E0B);
+    letter-spacing: 2px;
+    animation: fadeIn 1s ease;
+}
+
+.preloader-spinner {
+    width: 50px;
+    height: 50px;
+    margin: 20px auto;
+    border: 3px solid rgba(245, 158, 11, 0.3);
+    border-top-color: var(--cinema-gold, #F59E0B);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* ===== Image Loading States ===== */
+.lazy-image {
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+
+.lazy-image.loaded {
+    opacity: 1;
+}
+
+.image-placeholder {
+    background: linear-gradient(90deg, 
+        rgba(107, 70, 193, 0.1) 25%, 
+        rgba(245, 158, 11, 0.1) 50%, 
+        rgba(107, 70, 193, 0.1) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+/* ===== Content Loading States ===== */
+.content-loading {
+    position: relative;
+    min-height: 200px;
+}
+
+.content-loading::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    margin: -20px 0 0 -20px;
+    border: 3px solid rgba(245, 158, 11, 0.3);
+    border-top-color: var(--cinema-gold, #F59E0B);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* ===== Button Loading States ===== */
+.btn-loading {
+    position: relative;
+    color: transparent !important;
+    pointer-events: none;
+}
+
+.btn-loading::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    margin-left: -10px;
+    margin-top: -10px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+/* ===== Skeleton Loading ===== */
+.skeleton-container {
+    padding: 20px;
+}
+
+.skeleton-movie-card {
+    background: rgba(31, 41, 55, 0.5);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.skeleton-poster {
+    width: 100%;
+    height: 300px;
+    background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.skeleton-title {
+    height: 24px;
+    width: 70%;
+    margin-bottom: 10px;
+}
+
+.skeleton-text {
+    height: 16px;
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.skeleton-text:last-child {
+    width: 80%;
+}
+
+/* ===== Performance Optimizations ===== */
+
+/* Use will-change sparingly */
+.will-animate-transform {
+    will-change: transform;
+}
+
+.will-animate-opacity {
+    will-change: opacity;
+}
+
+/* Remove will-change after animation */
+.animation-done {
+    will-change: auto;
+}
+
+/* Optimize animations for mobile */
+@media (max-width: 768px) {
+    /* Reduce animation complexity on mobile */
+    .animate-fade-in-up,
+    .animate-fade-in-down,
+    .animate-fade-in-left,
+    .animate-fade-in-right {
+        animation-duration: 0.4s;
+    }
+    
+    /* Disable parallax on mobile for performance */
+    .parallax-bg {
+        position: relative;
+        transform: none !important;
+    }
+    
+    /* Simplify hover effects on touch devices */
+    @media (hover: none) {
+        .hover-lift:hover,
+        .hover-scale:hover,
+        .hover-rotate:hover {
+            transform: none;
+        }
+    }
+}
+
+/* ===== Reduced Motion Support ===== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    
+    .parallax-bg {
+        transform: none !important;
+    }
+    
+    .floating-element,
+    .floating-popcorn {
+        animation: none !important;
+    }
+}
+
+/* ===== Loading Progress Bar ===== */
+.loading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: rgba(31, 41, 55, 0.2);
+    z-index: 9999;
+}
+
+.loading-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--cinema-gold), var(--cinema-purple));
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+/* ===== Error States ===== */
+.error-state {
+    text-align: center;
+    padding: 40px;
+    color: var(--cinema-red, #DC2626);
+}
+
+.error-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    animation: shake 0.5s ease;
+}
+
+.error-message {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+.retry-button {
+    padding: 10px 30px;
+    background: var(--cinema-gold);
+    color: var(--cinema-dark);
+    border: none;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.retry-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(245, 158, 11, 0.4);
+}

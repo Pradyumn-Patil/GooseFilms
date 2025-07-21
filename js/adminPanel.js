@@ -11,24 +11,39 @@ class AdminPanel {
     }
 
     init() {
-        this.checkAuth();
-        this.setupEventListeners();
-        this.populateTheaters();
-        this.populateTimeSlots();
-        this.renderCalendar();
-        this.updateSelectedDateDisplay();
-        this.loadScheduleForSelectedDate();
-        this.checkFirebaseStatus();
-        
-        // Listen for real-time updates
-        window.addEventListener('schedulesUpdated', () => {
+        try {
+            this.checkAuth();
+            this.setupEventListeners();
+            this.populateTheaters();
+            this.populateTimeSlots();
+            this.renderCalendar();
+            this.updateSelectedDateDisplay();
             this.loadScheduleForSelectedDate();
-        });
+            this.checkFirebaseStatus();
+            
+            // Listen for real-time updates
+            window.addEventListener('schedulesUpdated', () => {
+                this.loadScheduleForSelectedDate();
+            });
+            
+            // Listen for schedule errors
+            window.addEventListener('scheduleError', (event) => {
+                this.showError(event.detail.message);
+            });
+        } catch (error) {
+            console.error('Failed to initialize admin panel:', error);
+            this.showError('Failed to initialize admin panel', error);
+        }
     }
 
     checkAuth() {
-        // Use simple auth instead of old method
-        if (!window.simpleAuth || !window.simpleAuth.isAuthenticated()) {
+        try {
+            // Use simple auth instead of old method
+            if (!window.simpleAuth || !window.simpleAuth.isAuthenticated()) {
+                this.redirectToLogin();
+            }
+        } catch (error) {
+            console.error('Authentication check failed:', error);
             this.redirectToLogin();
         }
     }
@@ -37,8 +52,59 @@ class AdminPanel {
         window.location.href = 'login.html';
     }
 
+    // Show error messages to user
+    showError(message, error = null) {
+        if (error) {
+            console.error(message, error);
+        }
+        
+        // Create or update error toast
+        let errorToast = document.getElementById('error-toast');
+        if (!errorToast) {
+            errorToast = document.createElement('div');
+            errorToast.id = 'error-toast';
+            errorToast.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: #DC2626;
+                color: white;
+                padding: 16px 24px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 10000;
+                max-width: 400px;
+                animation: slideInRight 0.3s ease;
+            `;
+            document.body.appendChild(errorToast);
+        }
+        
+        errorToast.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <span style="font-size: 20px;">⚠️</span>
+                <div>
+                    <div style="font-weight: 600;">${message}</div>
+                    ${error ? `<div style="font-size: 0.85em; opacity: 0.9; margin-top: 4px;">Check console for details</div>` : ''}
+                </div>
+            </div>
+        `;
+        
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+            if (errorToast) {
+                errorToast.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => errorToast.remove(), 300);
+            }
+        }, 5000);
+    }
+
     setupEventListeners() {
         const searchBox = document.getElementById('movieSearch');
+        if (!searchBox) {
+            console.error('Movie search box not found');
+            return;
+        }
+        
         searchBox.addEventListener('input', (e) => {
             clearTimeout(this.searchTimeout);
             this.searchTimeout = setTimeout(() => {
@@ -49,7 +115,17 @@ class AdminPanel {
 
     populateTheaters() {
         const select = document.getElementById('theaterSelect');
+        if (!select) {
+            console.error('Theater select element not found');
+            return;
+        }
+        
         select.innerHTML = '';
+        
+        if (!CONFIG || !CONFIG.THEATERS) {
+            console.error('Theater configuration not found');
+            return;
+        }
         
         CONFIG.THEATERS.forEach(theater => {
             const option = document.createElement('option');
@@ -61,9 +137,25 @@ class AdminPanel {
 
     populateTimeSlots() {
         const container = document.getElementById('timeSlots');
+        if (!container) {
+            console.error('Time slots container not found');
+            return;
+        }
+        
         container.innerHTML = '';
         
-        scheduleManager.getTimeSlots().forEach(time => {
+        if (!scheduleManager || typeof scheduleManager.getTimeSlots !== 'function') {
+            console.error('Schedule manager not initialized properly');
+            return;
+        }
+        
+        const timeSlots = scheduleManager.getTimeSlots();
+        if (!Array.isArray(timeSlots)) {
+            console.error('Invalid time slots data');
+            return;
+        }
+        
+        timeSlots.forEach(time => {
             const slot = document.createElement('div');
             slot.className = 'time-slot';
             slot.textContent = time;
@@ -87,13 +179,14 @@ class AdminPanel {
         
         if (!resultsContainer) {
             console.error('Search results container not found');
+            this.showError('Search interface not properly initialized');
             return;
         }
         
         // Ensure container is visible
         resultsContainer.style.display = 'block';
         
-        if (!query.trim()) {
+        if (!query || !query.trim()) {
             resultsContainer.innerHTML = '<p>Start typing to search for movies...</p>';
             return;
         }
@@ -102,18 +195,33 @@ class AdminPanel {
 
         try {
             const movies = await movieAPI.searchMovies(query);
-            console.log(`Found ${movies.length} movies for query: ${query}`);
+            
+            if (!Array.isArray(movies)) {
+                throw new Error('Invalid response from movie API');
+            }
+            
             this.displaySearchResults(movies);
         } catch (error) {
-            resultsContainer.innerHTML = '<p>Error searching movies. Please try again.</p>';
+            resultsContainer.innerHTML = `
+                <div class="error-message">
+                    <p>⚠️ Error searching movies</p>
+                    <p style="font-size: 0.9em; opacity: 0.8;">Please check your internet connection and try again.</p>
+                </div>
+            `;
             console.error('Search error:', error);
+            this.showError('Failed to search movies', error);
         }
     }
 
     displaySearchResults(movies) {
         const container = document.getElementById('searchResults');
         
-        if (movies.length === 0) {
+        if (!container) {
+            console.error('Search results container not found');
+            return;
+        }
+        
+        if (!movies || movies.length === 0) {
             container.innerHTML = '<p>No movies found.</p>';
             return;
         }
@@ -140,7 +248,6 @@ class AdminPanel {
             
             // Add click event listener
             movieDiv.addEventListener('click', () => {
-                console.log('Movie clicked:', movie.title);
                 this.selectMovieForScheduling(movie);
             });
             
@@ -149,7 +256,6 @@ class AdminPanel {
     }
 
     selectMovieForScheduling(movie) {
-        console.log('Selected movie:', movie);
         this.selectedMovie = movie;
         this.showScheduleForm();
         this.displaySelectedMovie();
@@ -177,8 +283,7 @@ class AdminPanel {
                 form.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }, 100);
             
-            console.log('Schedule form shown');
-            
+                
             // Show success notification
             if (window.showNotification) {
                 showNotification('Movie selected! Fill in the details below.', 'info');
@@ -218,7 +323,6 @@ class AdminPanel {
             return;
         }
 
-        console.log('Displaying selected movie:', this.selectedMovie.title);
         
         container.innerHTML = `
             <div style="display: flex; gap: 15px; margin-bottom: 15px; padding: 15px; background: var(--apple-tertiary-background); border-radius: 8px; border: 1px solid var(--apple-gray-3);">

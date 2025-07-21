@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GooseFilms — Join the Club</title>
+    <link rel="stylesheet" href="animations.css">
+    <link rel="stylesheet" href="animations-extras.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;600;700&display=swap');
         
@@ -108,12 +110,16 @@
             text-shadow: var(--neon-glow);
             margin-bottom: 1rem;
             letter-spacing: 4px;
+            opacity: 0;
+            animation: fadeInDown 0.8s var(--ease-out-expo) 0.2s both;
         }
 
         .hero-subtitle {
             font-size: 1.5rem;
             color: var(--cinema-purple);
             margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeInUp 0.8s var(--ease-out-expo) 0.4s both;
         }
 
         /* Marquee */
@@ -127,7 +133,7 @@
 
         .marquee-content {
             display: inline-block;
-            animation: marquee 20s linear infinite;
+            animation: marquee 20s linear infinite, fadeIn 1s ease;
             font-family: 'Bebas Neue', cursive;
             font-size: 1.5rem;
             letter-spacing: 2px;
@@ -166,14 +172,16 @@
             border: 2px solid var(--cinema-purple);
             border-radius: 20px;
             padding: 2rem;
-            transition: all 0.3s ease;
+            transition: all 0.3s var(--ease-out-expo);
             position: relative;
             overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px);
         }
 
         .job-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(107, 70, 193, 0.3);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(107, 70, 193, 0.4);
             border-color: var(--cinema-gold);
         }
 
@@ -209,6 +217,12 @@
             font-size: 4rem;
             margin-bottom: 1rem;
             filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.5));
+            transition: transform 0.5s var(--ease-spring);
+        }
+        
+        .job-card:hover .job-emoji {
+            transform: scale(1.2) rotate(10deg);
+            animation: float 2s ease-in-out infinite;
         }
 
         .job-title {
@@ -270,9 +284,11 @@
             font-weight: 700;
             font-size: 1.1rem;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s var(--ease-out-expo);
             text-transform: uppercase;
             letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
         }
 
         .apply-btn:hover {
@@ -289,6 +305,8 @@
             border: 2px solid var(--cinema-gold);
             border-radius: 30px;
             margin-bottom: 4rem;
+            opacity: 0;
+            animation: scaleIn 0.6s var(--ease-out-expo) 0.8s both;
         }
 
         .form-group {
@@ -414,7 +432,9 @@
             padding: 2rem;
             background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(107, 70, 193, 0.1));
             border-radius: 15px;
-            transition: all 0.3s ease;
+            transition: all 0.3s var(--ease-out-expo);
+            opacity: 0;
+            transform: translateY(20px);
         }
 
         .benefit-card:hover {
@@ -435,6 +455,36 @@
         .benefit-description {
             color: var(--cinema-light);
             font-size: 0.9rem;
+        }
+
+        /* Form label animation */
+        .form-group label {
+            transition: all 0.3s var(--ease-out-expo);
+            transform-origin: left;
+        }
+        
+        .form-group input:focus ~ label,
+        .form-group textarea:focus ~ label,
+        .form-group select:focus ~ label {
+            color: var(--cinema-gold);
+            transform: scale(0.95);
+        }
+        
+        /* Radio button custom style */
+        .radio-option {
+            transition: all 0.3s ease;
+            padding: 0.5rem;
+            border-radius: 10px;
+        }
+        
+        .radio-option:hover {
+            background: rgba(107, 70, 193, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .radio-option input[type="radio"]:checked + span {
+            color: var(--cinema-gold);
+            font-weight: 600;
         }
 
         /* Responsive */
@@ -469,8 +519,8 @@
 
     <!-- Hero Section -->
     <section class="hero">
-        <h1>JOIN THE CREW</h1>
-        <p class="hero-subtitle">Where Movie Magic Meets Friendship</p>
+        <h1>Join Our Movie Club</h1>
+        <p class="hero-subtitle">Watch movies, eat snacks, have fun</p>
     </section>
 
     <!-- Marquee -->
@@ -488,19 +538,17 @@
             <!-- Job 1 -->
             <div class="job-card">
                 <div class="job-emoji">🍿</div>
-                <h3 class="job-title">Chief Popcorn Officer</h3>
-                <p class="job-department">Snack Management Department</p>
+                <h3 class="job-title">Snack Person</h3>
+                <p class="job-department">Snacks</p>
                 <p class="job-description">
-                    Lead our snack operations with style and butter. Ensure optimal kernel-to-pop ratio 
-                    and maintain the perfect salt distribution across all servings.
+                    Make popcorn for movie nights. Keep track of snacks and make sure everyone gets some.
                 </p>
                 <div class="job-requirements">
                     <h4>Requirements:</h4>
                     <ul>
-                        <li>Expert knowledge of popcorn varieties</li>
-                        <li>Strong opinions on butter vs. no butter</li>
-                        <li>Ability to share (negotiable)</li>
-                        <li>No kernels stuck in teeth during screenings</li>
+                        <li>Like making popcorn</li>
+                        <li>Can follow recipes</li>
+                        <li>Willing to help with cleanup</li>
                     </ul>
                 </div>
                 <button class="apply-btn" onclick="scrollToApplication()">APPLY NOW</button>
@@ -509,19 +557,17 @@
             <!-- Job 2 -->
             <div class="job-card">
                 <div class="job-emoji">🛋️</div>
-                <h3 class="job-title">Director of Couch Arrangements</h3>
-                <p class="job-department">Comfort Engineering</p>
+                <h3 class="job-title">Setup Helper</h3>
+                <p class="job-department">Setup</p>
                 <p class="job-description">
-                    Architect the perfect viewing experience. Master of pillows, blankets, and optimal 
-                    seating configurations for maximum movie enjoyment.
+                    Help set up the room before movies. Arrange seats and make sure everyone's comfortable.
                 </p>
                 <div class="job-requirements">
                     <h4>Requirements:</h4>
                     <ul>
-                        <li>PhD in Couch Potato Sciences preferred</li>
-                        <li>Expertise in blanket fort construction</li>
-                        <li>Strong negotiation skills for armrest disputes</li>
-                        <li>Ability to find remote in couch cushions</li>
+                        <li>Can move furniture</li>
+                        <li>Good at organizing spaces</li>
+                        <li>Available before movie nights</li>
                     </ul>
                 </div>
                 <button class="apply-btn" onclick="scrollToApplication()">APPLY NOW</button>
@@ -530,19 +576,17 @@
             <!-- Job 3 -->
             <div class="job-card">
                 <div class="job-emoji">🍕</div>
-                <h3 class="job-title">Senior Snack Coordinator</h3>
-                <p class="job-department">Culinary Cinema Division</p>
+                <h3 class="job-title">Food Organizer</h3>
+                <p class="job-department">Food</p>
                 <p class="job-description">
-                    Curate the perfect movie snack pairings. From nachos for action films to tissues 
-                    for tearjerkers, you'll ensure no one watches on an empty stomach.
+                    Order food for movie nights. Keep track of what people like and handle deliveries.
                 </p>
                 <div class="job-requirements">
                     <h4>Requirements:</h4>
                     <ul>
-                        <li>Extensive knowledge of delivery apps</li>
-                        <li>Ability to eat quietly during dialogue</li>
-                        <li>Pizza ordering speed under 2 minutes</li>
-                        <li>Emergency candy stash management</li>
+                        <li>Know local food places</li>
+                        <li>Can handle group orders</li>
+                        <li>Good at collecting money</li>
                     </ul>
                 </div>
                 <button class="apply-btn" onclick="scrollToApplication()">APPLY NOW</button>
@@ -551,19 +595,17 @@
             <!-- Job 4 -->
             <div class="job-card">
                 <div class="job-emoji">🎭</div>
-                <h3 class="job-title">Movie Mood Manager</h3>
-                <p class="job-department">Vibe Control Department</p>
+                <h3 class="job-title">Room Setup</h3>
+                <p class="job-department">Tech</p>
                 <p class="job-description">
-                    Set the perfect atmosphere for each screening. Master of lighting, temperature, 
-                    and pre-movie music playlists. Guardian of the sacred "no phones" rule.
+                    Get the room ready for movies. Adjust lights and temperature, remind people about phones.
                 </p>
                 <div class="job-requirements">
                     <h4>Requirements:</h4>
                     <ul>
-                        <li>Dimmer switch expertise</li>
-                        <li>Ability to shush politely but firmly</li>
-                        <li>Mood lighting certification</li>
-                        <li>Zero tolerance for spoilers</li>
+                        <li>Know how to use basic AV equipment</li>
+                        <li>Can arrive early to set up</li>
+                        <li>Good with technical stuff</li>
                     </ul>
                 </div>
                 <button class="apply-btn" onclick="scrollToApplication()">APPLY NOW</button>
@@ -572,19 +614,17 @@
             <!-- Job 5 -->
             <div class="job-card">
                 <div class="job-emoji">📊</div>
-                <h3 class="job-title">Stats & Trivia Keeper</h3>
-                <p class="job-department">Nerd Resources</p>
+                <h3 class="job-title">Movie Tracker</h3>
+                <p class="job-department">Records</p>
                 <p class="job-description">
-                    Track our movie-watching achievements and maintain the sacred database of quotes. 
-                    Create fun trivia questions and settle all movie-related debates.
+                    Keep track of what movies we've watched. Make trivia questions for fun.
                 </p>
                 <div class="job-requirements">
                     <h4>Requirements:</h4>
                     <ul>
-                        <li>Encyclopedic movie knowledge</li>
-                        <li>IMDB navigation black belt</li>
-                        <li>Ability to remember who said what</li>
-                        <li>Spreadsheet enthusiasm</li>
+                        <li>Like keeping lists</li>
+                        <li>Basic spreadsheet skills</li>
+                        <li>Good memory for movies</li>
                     </ul>
                 </div>
                 <button class="apply-btn" onclick="scrollToApplication()">APPLY NOW</button>
@@ -593,19 +633,131 @@
             <!-- Job 6 -->
             <div class="job-card">
                 <div class="job-emoji">😂</div>
-                <h3 class="job-title">Chief Laugh Officer</h3>
-                <p class="job-department">Comedy Appreciation Unit</p>
+                <h3 class="job-title">Comedy Night Host</h3>
+                <p class="job-department">Events</p>
                 <p class="job-description">
-                    Ensure maximum laughter levels during comedy nights. Professional giggler with 
-                    contagious enthusiasm and expert timing on the pause button for laugh breaks.
+                    Pick and introduce comedy movies. Help create a fun atmosphere for comedy nights.
                 </p>
                 <div class="job-requirements">
                     <h4>Requirements:</h4>
                     <ul>
-                        <li>Variety of laugh types in repertoire</li>
-                        <li>Ability to explain why it's funny</li>
-                        <li>Snort-laugh not required but appreciated</li>
-                        <li>Must not spoil punchlines</li>
+                        <li>Enjoy comedy movies</li>
+                        <li>Can recommend good comedies</li>
+                        <li>Friendly personality</li>
+                    </ul>
+                </div>
+                <button class="apply-btn" onclick="scrollToApplication()">APPLY NOW</button>
+            </div>
+
+            <!-- Job 7 - Tech -->
+            <div class="job-card">
+                <div class="job-emoji">💻</div>
+                <h3 class="job-title">Website Manager</h3>
+                <p class="job-department">Tech</p>
+                <p class="job-description">
+                    Keep our website running smoothly. Update movie listings and member profiles.
+                </p>
+                <div class="job-requirements">
+                    <h4>Requirements:</h4>
+                    <ul>
+                        <li>Basic HTML/CSS knowledge</li>
+                        <li>Can update content regularly</li>
+                        <li>Quick to fix issues</li>
+                    </ul>
+                </div>
+                <button class="apply-btn" onclick="scrollToApplication()">APPLY NOW</button>
+            </div>
+
+            <!-- Job 8 - Tech -->
+            <div class="job-card">
+                <div class="job-emoji">📱</div>
+                <h3 class="job-title">Streaming Tech Support</h3>
+                <p class="job-department">Tech</p>
+                <p class="job-description">
+                    Handle streaming setup for remote members. Troubleshoot connection issues during movie nights.
+                </p>
+                <div class="job-requirements">
+                    <h4>Requirements:</h4>
+                    <ul>
+                        <li>Know streaming platforms</li>
+                        <li>Good with video calls</li>
+                        <li>Patient with tech issues</li>
+                    </ul>
+                </div>
+                <button class="apply-btn" onclick="scrollToApplication()">APPLY NOW</button>
+            </div>
+
+            <!-- Job 9 - Logistics -->
+            <div class="job-card">
+                <div class="job-emoji">📅</div>
+                <h3 class="job-title">Schedule Coordinator</h3>
+                <p class="job-department">Logistics</p>
+                <p class="job-description">
+                    Plan movie night schedules. Coordinate with members' availability and manage the calendar.
+                </p>
+                <div class="job-requirements">
+                    <h4>Requirements:</h4>
+                    <ul>
+                        <li>Good with calendars</li>
+                        <li>Can coordinate schedules</li>
+                        <li>Reliable communication</li>
+                    </ul>
+                </div>
+                <button class="apply-btn" onclick="scrollToApplication()">APPLY NOW</button>
+            </div>
+
+            <!-- Job 10 - Logistics -->
+            <div class="job-card">
+                <div class="job-emoji">🚗</div>
+                <h3 class="job-title">Transportation Helper</h3>
+                <p class="job-department">Logistics</p>
+                <p class="job-description">
+                    Help coordinate rides for members. Organize carpools for movie theater trips.
+                </p>
+                <div class="job-requirements">
+                    <h4>Requirements:</h4>
+                    <ul>
+                        <li>Has a car (preferred)</li>
+                        <li>Good at organizing groups</li>
+                        <li>Knows local area well</li>
+                    </ul>
+                </div>
+                <button class="apply-btn" onclick="scrollToApplication()">APPLY NOW</button>
+            </div>
+
+            <!-- Job 11 - Tech -->
+            <div class="job-card">
+                <div class="job-emoji">🎮</div>
+                <h3 class="job-title">Voting System Admin</h3>
+                <p class="job-department">Tech</p>
+                <p class="job-description">
+                    Manage our movie voting system. Set up polls and track voting results.
+                </p>
+                <div class="job-requirements">
+                    <h4>Requirements:</h4>
+                    <ul>
+                        <li>Familiar with online polls</li>
+                        <li>Basic data tracking skills</li>
+                        <li>Fair and transparent</li>
+                    </ul>
+                </div>
+                <button class="apply-btn" onclick="scrollToApplication()">APPLY NOW</button>
+            </div>
+
+            <!-- Job 12 - Logistics -->
+            <div class="job-card">
+                <div class="job-emoji">📦</div>
+                <h3 class="job-title">Equipment Manager</h3>
+                <p class="job-department">Logistics</p>
+                <p class="job-description">
+                    Keep track of club equipment. Manage projector, speakers, and other movie gear.
+                </p>
+                <div class="job-requirements">
+                    <h4>Requirements:</h4>
+                    <ul>
+                        <li>Organized and responsible</li>
+                        <li>Can store equipment safely</li>
+                        <li>Basic tech knowledge</li>
                     </ul>
                 </div>
                 <button class="apply-btn" onclick="scrollToApplication()">APPLY NOW</button>
@@ -659,12 +811,18 @@
                 <label for="position">Position Applying For</label>
                 <select id="position" name="position" required>
                     <option value="">Select a position...</option>
-                    <option value="cpo">Chief Popcorn Officer</option>
-                    <option value="dca">Director of Couch Arrangements</option>
-                    <option value="ssc">Senior Snack Coordinator</option>
-                    <option value="mmm">Movie Mood Manager</option>
-                    <option value="stk">Stats & Trivia Keeper</option>
-                    <option value="clo">Chief Laugh Officer</option>
+                    <option value="sp">Snack Person</option>
+                    <option value="sh">Setup Helper</option>
+                    <option value="fo">Food Organizer</option>
+                    <option value="rs">Room Setup</option>
+                    <option value="mt">Movie Tracker</option>
+                    <option value="cnh">Comedy Night Host</option>
+                    <option value="wm">Website Manager</option>
+                    <option value="sts">Streaming Tech Support</option>
+                    <option value="sc">Schedule Coordinator</option>
+                    <option value="th">Transportation Helper</option>
+                    <option value="vsa">Voting System Admin</option>
+                    <option value="em">Equipment Manager</option>
                 </select>
             </div>
             
@@ -746,7 +904,40 @@
         </form>
     </section>
 
+    <script src="animations.js"></script>
+    <script src="navigation.js"></script>
     <script>
+        // Initialize page animations
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add page transition
+            document.body.classList.add('page-loaded');
+            
+            // Animate job cards
+            const jobCards = document.querySelectorAll('.job-card');
+            jobCards.forEach((card, index) => {
+                card.classList.add('scroll-fade-in');
+                card.style.animationDelay = `${index * 0.1}s`;
+            });
+            
+            // Animate benefit cards
+            const benefitCards = document.querySelectorAll('.benefit-card');
+            benefitCards.forEach((card, index) => {
+                card.classList.add('scroll-fade-in');
+                card.style.animationDelay = `${0.5 + index * 0.15}s`;
+            });
+            
+            // Initialize animations
+            setTimeout(() => {
+                initScrollAnimations();
+                initRippleEffect();
+            }, 100);
+            
+            // Add ripple effect to buttons
+            document.querySelectorAll('.apply-btn, .submit-btn').forEach(btn => {
+                btn.classList.add('ripple');
+            });
+        });
+        
         // Scroll to application form
         function scrollToApplication() {
             document.getElementById('applicationForm').scrollIntoView({ 
@@ -755,21 +946,61 @@
             });
         }
         
-        // Submit application
+        // Submit application with animation
         function submitApplication(event) {
             event.preventDefault();
             
             const formData = new FormData(event.target);
             const data = Object.fromEntries(formData);
             
-            // Show success message
-            alert(`🎉 Application submitted!\n\nThanks ${data.name}! We'll review your application and get back to you faster than you can say "Action!"\n\nIn the meantime, start practicing your movie quotes!`);
+            // Animate the submit button
+            const submitBtn = event.target.querySelector('.submit-btn');
+            submitBtn.textContent = 'SUBMITTING...';
+            submitBtn.classList.add('animate-pulse');
             
-            // Reset form
-            event.target.reset();
-            
-            // Scroll to top
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            // Simulate submission delay
+            setTimeout(() => {
+                // Create success notification
+                const successNotification = document.createElement('div');
+                successNotification.className = 'toast show';
+                successNotification.style.cssText = `
+                    position: fixed;
+                    bottom: 2rem;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: var(--success-green);
+                    color: white;
+                    padding: 1.5rem 3rem;
+                    border-radius: 15px;
+                    font-weight: 600;
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                    z-index: 1000;
+                    animation: bounceIn 0.6s var(--ease-spring);
+                `;
+                successNotification.innerHTML = `
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🎉 Application Submitted!</div>
+                    <div>Thanks ${data.name}! We'll be in touch soon.</div>
+                `;
+                document.body.appendChild(successNotification);
+                
+                // Reset form with animation
+                event.target.classList.add('animate-fade-out');
+                setTimeout(() => {
+                    event.target.reset();
+                    event.target.classList.remove('animate-fade-out');
+                    submitBtn.textContent = 'SUBMIT APPLICATION';
+                    submitBtn.classList.remove('animate-pulse');
+                }, 500);
+                
+                // Remove notification after 5 seconds
+                setTimeout(() => {
+                    successNotification.classList.add('animate-fade-out');
+                    setTimeout(() => successNotification.remove(), 500);
+                }, 5000);
+                
+                // Scroll to top smoothly
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 1500);
         }
         
         // Add floating elements

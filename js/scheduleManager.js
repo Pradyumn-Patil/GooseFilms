@@ -19,7 +19,6 @@ class ScheduleManager {
                 this.db = window.firebaseUtils.getFirestore();
                 await this.loadSchedules();
                 this.initialized = true;
-                console.log('ScheduleManager initialized with Firebase');
             } else {
                 console.warn('Firebase not configured. Schedule management will not persist.');
                 this.initialized = true;
@@ -27,9 +26,29 @@ class ScheduleManager {
             return this.schedules;
         } catch (error) {
             console.error('Error initializing ScheduleManager:', error);
+            this.handleError('Failed to initialize schedule manager', error);
             this.initialized = true;
             return {};
         }
+    }
+
+    // Handle errors with user-friendly messages
+    handleError(message, error) {
+        // Log detailed error for debugging
+        console.error(`${message}:`, error);
+        
+        // Show user-friendly notification
+        if (window.showToast) {
+            window.showToast(`⚠️ ${message}`, 'error');
+        } else {
+            // Fallback alert if toast not available
+            alert(`Error: ${message}`);
+        }
+        
+        // Dispatch error event for UI handling
+        window.dispatchEvent(new CustomEvent('scheduleError', {
+            detail: { message, error }
+        }));
     }
 
     // Ensure initialization before any operation
@@ -52,12 +71,10 @@ class ScheduleManager {
             
             if (schedulesDoc.exists) {
                 this.schedules = schedulesDoc.data().schedules || {};
-                console.log('Loaded schedules from Firebase:', this.schedules);
             } else {
                 // Create initial document if it doesn't exist
                 this.schedules = {};
                 await this.saveSchedules();
-                console.log('Created new schedules document in Firebase');
             }
             
             // Set up real-time listener
@@ -66,6 +83,8 @@ class ScheduleManager {
             return this.schedules;
         } catch (error) {
             console.error('Error loading schedules from Firebase:', error);
+            // Show user-friendly error message
+            this.handleError('Failed to load movie schedules. Please refresh the page.', error);
             this.schedules = {};
             return {};
         }
@@ -80,7 +99,6 @@ class ScheduleManager {
                 if (doc.exists) {
                     const newSchedules = doc.data().schedules || {};
                     this.schedules = newSchedules;
-                    console.log('Schedules updated from Firebase');
                     
                     // Dispatch custom event for UI updates
                     window.dispatchEvent(new CustomEvent('schedulesUpdated', { 
@@ -106,7 +124,6 @@ class ScheduleManager {
                 updatedBy: 'admin' // You can enhance this with actual user info
             });
             
-            console.log('Schedules saved to Firebase');
             return true;
         } catch (error) {
             console.error('Error saving schedules to Firebase:', error);
@@ -116,48 +133,86 @@ class ScheduleManager {
 
     // Add a movie to schedule for a specific date
     async addMovieToSchedule(date, movie, showtimes, theaterId) {
-        await this.ensureInitialized();
-        
-        const dateKey = this.formatDateKey(date);
-        
-        if (!this.schedules[dateKey]) {
-            this.schedules[dateKey] = [];
+        try {
+            await this.ensureInitialized();
+            
+            // Validate inputs
+            if (!date || !movie || !showtimes || !theaterId) {
+                throw new Error('Missing required parameters');
+            }
+            
+            const dateKey = this.formatDateKey(date);
+            
+            if (!this.schedules[dateKey]) {
+                this.schedules[dateKey] = [];
+            }
+
+            const theater = this.theaters.find(t => t.id === theaterId);
+            if (!theater) {
+                throw new Error('Invalid theater ID');
+            }
+            
+            const scheduleEntry = {
+                id: Date.now() + Math.random(),
+                movie: movie,
+                showtimes: showtimes,
+                theater: theater,
+                dateAdded: new Date().toISOString()
+            };
+
+            this.schedules[dateKey].push(scheduleEntry);
+            
+            const saved = await this.saveSchedules();
+            if (!saved) {
+                throw new Error('Failed to save schedule');
+            }
+            
+            return scheduleEntry;
+        } catch (error) {
+            console.error('Error adding movie to schedule:', error);
+            this.handleError('Failed to add movie to schedule', error);
+            throw error;
         }
-
-        const theater = this.theaters.find(t => t.id === theaterId);
-        
-        const scheduleEntry = {
-            id: Date.now() + Math.random(),
-            movie: movie,
-            showtimes: showtimes,
-            theater: theater,
-            dateAdded: new Date().toISOString()
-        };
-
-        this.schedules[dateKey].push(scheduleEntry);
-        await this.saveSchedules();
-        return scheduleEntry;
     }
 
     // Remove a movie from schedule
     async removeMovieFromSchedule(date, scheduleId) {
-        await this.ensureInitialized();
-        
-        const dateKey = this.formatDateKey(date);
-        
-        if (this.schedules[dateKey]) {
-            this.schedules[dateKey] = this.schedules[dateKey].filter(
-                entry => entry.id !== scheduleId
-            );
+        try {
+            await this.ensureInitialized();
             
-            if (this.schedules[dateKey].length === 0) {
-                delete this.schedules[dateKey];
+            if (!date || !scheduleId) {
+                throw new Error('Missing required parameters');
             }
             
-            await this.saveSchedules();
-            return true;
+            const dateKey = this.formatDateKey(date);
+            
+            if (this.schedules[dateKey]) {
+                const originalLength = this.schedules[dateKey].length;
+                this.schedules[dateKey] = this.schedules[dateKey].filter(
+                    entry => entry.id !== scheduleId
+                );
+                
+                if (this.schedules[dateKey].length === originalLength) {
+                    throw new Error('Schedule entry not found');
+                }
+                
+                if (this.schedules[dateKey].length === 0) {
+                    delete this.schedules[dateKey];
+                }
+                
+                const saved = await this.saveSchedules();
+                if (!saved) {
+                    throw new Error('Failed to save changes');
+                }
+                
+                return true;
+            }
+            throw new Error('No schedules found for this date');
+        } catch (error) {
+            console.error('Error removing movie from schedule:', error);
+            this.handleError('Failed to remove movie from schedule', error);
+            throw error;
         }
-        return false;
     }
 
     // Get scheduled movies for a specific date

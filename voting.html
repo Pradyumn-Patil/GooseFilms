@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GooseFilms — Movie Voting</title>
+    <link rel="stylesheet" href="animations.css">
+    <link rel="stylesheet" href="animations-extras.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;600;700&display=swap');
         
@@ -108,12 +110,16 @@
             text-shadow: var(--neon-glow);
             margin-bottom: 1rem;
             letter-spacing: 4px;
+            opacity: 0;
+            animation: fadeInDown 0.8s var(--ease-out-expo) 0.2s both;
         }
 
         .hero-subtitle {
             font-size: 1.25rem;
             color: var(--cinema-purple);
             margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeInUp 0.8s var(--ease-out-expo) 0.4s both;
         }
 
         /* Add Movie Section */
@@ -124,6 +130,8 @@
             background: linear-gradient(135deg, rgba(107, 70, 193, 0.1), rgba(245, 158, 11, 0.1));
             border: 2px solid var(--cinema-gold);
             border-radius: 20px;
+            opacity: 0;
+            animation: scaleIn 0.6s var(--ease-out-expo) 0.6s both;
         }
 
         .add-movie-form {
@@ -160,6 +168,21 @@
             outline: none;
             border-color: var(--cinema-gold);
             box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .form-group {
+            position: relative;
+        }
+        
+        .form-group label {
+            transition: all 0.3s var(--ease-out-expo);
+        }
+        
+        .form-group input:focus ~ label,
+        .form-group input:not(:placeholder-shown) ~ label {
+            transform: translateY(-5px) scale(0.9);
+            color: var(--cinema-gold);
         }
 
         .submit-btn {
@@ -170,9 +193,11 @@
             border-radius: 25px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s var(--ease-out-expo);
             text-transform: uppercase;
             letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
         }
 
         .submit-btn:hover {
@@ -209,6 +234,7 @@
             padding: 1rem 2rem;
             border-radius: 15px;
             text-align: center;
+            animation: pulse 2s ease-in-out infinite;
         }
 
         .deadline-label {
@@ -236,8 +262,10 @@
             border: 2px solid var(--cinema-purple);
             border-radius: 20px;
             overflow: hidden;
-            transition: all 0.3s ease;
+            transition: all 0.3s var(--ease-out-expo);
             position: relative;
+            opacity: 0;
+            transform: translateY(30px);
         }
 
         .movie-card:hover {
@@ -314,9 +342,11 @@
             border-radius: 10px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s var(--ease-out-expo);
             text-transform: uppercase;
             letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
         }
 
         .vote-btn:hover {
@@ -362,7 +392,7 @@
         .vote-progress-bar {
             height: 100%;
             background: linear-gradient(90deg, var(--cinema-gold), var(--cinema-purple));
-            transition: width 0.5s ease;
+            transition: width 0.8s var(--ease-out-expo);
             position: relative;
         }
 
@@ -513,8 +543,8 @@
                     <p class="movie-genre">Sci-Fi • Thriller</p>
                     <p class="suggested-by">Suggested by Alex</p>
                     <div class="vote-section">
-                        <button class="vote-btn" onclick="voteForMovie(this)">VOTE</button>
-                        <button class="comments-btn" onclick="toggleComments(this)">💬 3</button>
+                        <button class="vote-btn ripple" onclick="voteForMovie(this)">VOTE</button>
+                        <button class="comments-btn hover-scale" onclick="toggleComments(this)">💬 3</button>
                     </div>
                     <div class="vote-progress">
                         <div class="vote-progress-bar" style="width: 60%"></div>
@@ -543,8 +573,8 @@
                     <p class="movie-genre">Sci-Fi • Action</p>
                     <p class="suggested-by">Suggested by Emma</p>
                     <div class="vote-section">
-                        <button class="vote-btn" onclick="voteForMovie(this)">VOTE</button>
-                        <button class="comments-btn" onclick="toggleComments(this)">💬 2</button>
+                        <button class="vote-btn ripple" onclick="voteForMovie(this)">VOTE</button>
+                        <button class="comments-btn hover-scale" onclick="toggleComments(this)">💬 2</button>
                     </div>
                     <div class="vote-progress">
                         <div class="vote-progress-bar" style="width: 40%"></div>
@@ -569,8 +599,8 @@
                     <p class="movie-genre">Thriller • Drama</p>
                     <p class="suggested-by">Suggested by Sarah</p>
                     <div class="vote-section">
-                        <button class="vote-btn voted" onclick="voteForMovie(this)">VOTED ✓</button>
-                        <button class="comments-btn" onclick="toggleComments(this)">💬 5</button>
+                        <button class="vote-btn ripple voted" onclick="voteForMovie(this)">VOTED ✓</button>
+                        <button class="comments-btn hover-scale" onclick="toggleComments(this)">💬 5</button>
                     </div>
                     <div class="vote-progress">
                         <div class="vote-progress-bar" style="width: 75%"></div>
@@ -589,6 +619,8 @@
     <!-- Toast Notification -->
     <div class="toast" id="toast"></div>
 
+    <script src="animations.js"></script>
+    <script src="navigation.js"></script>
     <script>
         // Firebase SDK
         const firebaseLoaded = typeof firebase !== 'undefined';
@@ -651,7 +683,7 @@
             addMovieCard(newMovie);
         }
 
-        // Vote for Movie
+        // Vote for Movie with animation
         function voteForMovie(button) {
             if (button.classList.contains('voted')) {
                 return;
@@ -661,12 +693,23 @@
             const voteCount = card.querySelector('.vote-count');
             const currentVotes = parseInt(voteCount.textContent);
             
+            // Add vote animation
+            voteCount.classList.add('animate-bounce-in');
+            setTimeout(() => voteCount.classList.remove('animate-bounce-in'), 800);
+            
             // Update vote count
             voteCount.textContent = currentVotes + 1;
             
-            // Update button
+            // Update button with success animation
             button.classList.add('voted');
             button.textContent = 'VOTED ✓';
+            
+            // Add ripple effect
+            createRipple(button, event);
+            
+            // Animate card
+            card.classList.add('animate-pulse');
+            setTimeout(() => card.classList.remove('animate-pulse'), 600);
             
             // Update progress bar
             updateVoteProgress(card);
@@ -679,6 +722,29 @@
             const movieId = card.dataset.movieId || movieTitle;
             votingData.userVotes[movieId] = true;
             localStorage.setItem('userVotes', JSON.stringify(votingData.userVotes));
+        }
+        
+        // Create ripple effect
+        function createRipple(button, e) {
+            const ripple = document.createElement('span');
+            const rect = button.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+            
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            ripple.style.position = 'absolute';
+            ripple.style.borderRadius = '50%';
+            ripple.style.background = 'rgba(255, 255, 255, 0.6)';
+            ripple.style.transform = 'scale(0)';
+            ripple.style.animation = 'ripple-animation 0.6s ease-out';
+            ripple.style.pointerEvents = 'none';
+            
+            button.appendChild(ripple);
+            
+            setTimeout(() => ripple.remove(), 600);
         }
 
         // Toggle Comments
@@ -715,8 +781,9 @@
         function addMovieCard(movie) {
             const grid = document.getElementById('moviesGrid');
             const card = document.createElement('div');
-            card.className = 'movie-card';
+            card.className = 'movie-card hover-lift animate-fade-in-up';
             card.dataset.movieId = movie.id;
+            card.style.animationDelay = '0.2s';
             
             card.innerHTML = `
                 <div class="movie-poster">
@@ -728,8 +795,8 @@
                     <p class="movie-genre">${movie.genre}</p>
                     <p class="suggested-by">Suggested by ${movie.suggestedBy}</p>
                     <div class="vote-section">
-                        <button class="vote-btn" onclick="voteForMovie(this)">VOTE</button>
-                        <button class="comments-btn" onclick="toggleComments(this)">💬 ${movie.comments.length}</button>
+                        <button class="vote-btn ripple" onclick="voteForMovie(this)">VOTE</button>
+                        <button class="comments-btn hover-scale" onclick="toggleComments(this)">💬 ${movie.comments.length}</button>
                     </div>
                     <div class="vote-progress">
                         <div class="vote-progress-bar" style="width: 0%"></div>
@@ -756,9 +823,30 @@
         // Initialize
         updateCountdown();
         
-        // Update all progress bars on load
-        document.querySelectorAll('.movie-card').forEach(card => {
-            updateVoteProgress(card);
+        // Initialize page animations
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add page transition
+            document.body.classList.add('page-loaded');
+            
+            // Animate movie cards on load
+            const cards = document.querySelectorAll('.movie-card');
+            cards.forEach((card, index) => {
+                card.classList.add('scroll-fade-in');
+                card.style.animationDelay = `${0.8 + index * 0.15}s`;
+            });
+            
+            // Initialize animations
+            setTimeout(() => {
+                initScrollAnimations();
+                initRippleEffect();
+            }, 100);
+            
+            // Update all progress bars on load with animation
+            setTimeout(() => {
+                cards.forEach(card => {
+                    updateVoteProgress(card);
+                });
+            }, 1200);
         });
     </script>
 </body>

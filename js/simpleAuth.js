@@ -1,6 +1,12 @@
 // Simple codeword authentication for GooseFilms admin access
+// WARNING: This is a temporary solution. Use secureAuth.js for better security
 class SimpleAuth {
     constructor() {
+        // WARNING: Hardcoded credentials are insecure!
+        // This should be replaced with environment variables or a proper auth system
+        // See SECURITY.md for implementation details
+        console.warn('SimpleAuth is using hardcoded credentials. This is insecure for production use.');
+        
         // Hardcoded codeword - change this to whatever you want
         this.CODEWORD = 'goosefilms2024';
         

@@ -6,6 +6,9 @@
     <title>GooseFilms — Your Exclusive Movie Club</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="stylesheet" href="animations.css">
+    <link rel="stylesheet" href="animations-extras.css">
+    <link rel="stylesheet" href="loading-states.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;600;700&display=swap');
         
@@ -47,18 +50,23 @@
             overflow: hidden;
             min-height: 70vh;
             border-bottom: 5px solid #F59E0B;
+            transform-style: preserve-3d;
+            perspective: 1000px;
         }
 
         .hero-section::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: calc(0px + var(--bg-offset-y, 0px));
+            left: calc(0px + var(--bg-offset-x, 0px));
+            right: calc(0px - var(--bg-offset-x, 0px));
+            bottom: calc(0px - var(--bg-offset-y, 0px));
             background: url('assets/unicorn.jpeg') center center/cover;
             opacity: 0.2;
             filter: blur(2px);
+            transform: translateZ(-1px) scale(1.2);
+            will-change: transform;
+            transition: all 0.1s ease-out;
         }
 
         /* Floating elements */
@@ -105,12 +113,15 @@
             line-height: 0.9;
             color: var(--cinema-gold);
             text-shadow: var(--neon-glow);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s var(--ease-out-expo) 0.2s both, glowPulse 3s ease-in-out infinite;
         }
 
         .hero-subtitle {
             font-size: 1.75rem;
             font-weight: 400;
-            opacity: 0.9;
+            opacity: 0;
             margin-bottom: 48px;
             max-width: 600px;
             margin-left: auto;
@@ -119,6 +130,7 @@
             color: var(--cinema-purple);
             text-transform: uppercase;
             letter-spacing: 2px;
+            animation: fadeInUp 1s var(--ease-out-expo) 0.4s both;
         }
 
         .hero-buttons {
@@ -126,6 +138,8 @@
             gap: 1.5rem;
             justify-content: center;
             flex-wrap: wrap;
+            opacity: 0;
+            animation: fadeInUp 1s var(--ease-out-expo) 0.6s both;
         }
 
         .cta-button {
@@ -136,10 +150,12 @@
             text-decoration: none;
             border-radius: 50px;
             font-weight: 600;
-            transition: all 0.3s ease;
+            transition: all 0.3s var(--ease-out-expo);
             text-transform: uppercase;
             letter-spacing: 1px;
             box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+            position: relative;
+            overflow: hidden;
         }
 
         .cta-button:hover {
@@ -195,6 +211,7 @@
             z-index: 100;
             backdrop-filter: blur(20px);
             border-bottom: 2px solid var(--cinema-gold);
+            transition: transform 0.3s var(--ease-out-expo);
         }
 
         .filter-nav {
@@ -257,7 +274,9 @@
             font-weight: 600;
             margin-bottom: 32px;
             text-align: center;
-            color: var(--apple-label);
+            color: var(--cinema-light);
+            opacity: 0;
+            animation: fadeInDown 0.8s var(--ease-out-expo) 0.2s both;
         }
 
         .movies-grid {
@@ -274,6 +293,8 @@
             box-shadow: var(--apple-shadow);
             transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             border: 1px solid var(--apple-gray-3);
+            opacity: 0;
+            transform: translateY(30px);
         }
 
         .movie-card:hover {
@@ -369,7 +390,7 @@
         }
 
         .time-slot {
-            background: var(--apple-blue);
+            background: var(--cinema-purple);
             color: white;
             padding: 6px 12px;
             border-radius: 16px;
@@ -377,11 +398,15 @@
             font-weight: 500;
             transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
 
         .time-slot:hover {
-            background: var(--apple-blue-dark);
+            background: var(--cinema-gold);
+            color: var(--cinema-dark);
             transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.4);
         }
 
         .location {
@@ -529,6 +554,15 @@
     </style>
 </head>
 <body>
+    <!-- Cinema Curtain Loading Effect -->
+    <div class="cinema-curtain left"></div>
+    <div class="cinema-curtain right"></div>
+    
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress"></div>
+    
+    <!-- Back to Top Button -->
+    <button class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
     <!-- Hero Section -->
     <section class="hero-section">
         <div class="floating-element" style="top: 10%; left: 5%; animation-delay: 0s;">🍿</div>
@@ -593,16 +627,30 @@
     <script src="js/fileStorage.js"></script>
     <script src="js/movieAPI.js"></script>
     <script src="js/scheduleManager.js"></script>
+    <script src="js/assetValidator.js"></script>
+    <script src="animations.js"></script>
+    <script src="navigation.js"></script>
+    <script src="performance.js"></script>
     <script>
-        // Add smooth parallax effect to floating elements
+        // Enhanced parallax effect for floating elements with rotation
         document.addEventListener('mousemove', (e) => {
-            const x = e.clientX / window.innerWidth;
-            const y = e.clientY / window.innerHeight;
+            const x = (e.clientX / window.innerWidth - 0.5) * 2;
+            const y = (e.clientY / window.innerHeight - 0.5) * 2;
             
             document.querySelectorAll('.floating-element').forEach((el, index) => {
-                const speed = (index + 1) * 10;
-                el.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
+                const speed = (index + 1) * 15;
+                const rotateAmount = (index + 1) * 5;
+                el.style.transform = `translate(${x * speed}px, ${y * speed}px) rotate(${x * rotateAmount}deg) scale(${1 + Math.abs(x * 0.1)})`;
             });
+            
+            // Parallax effect for hero background
+            const heroBg = document.querySelector('.hero-section::before');
+            if (heroBg) {
+                const bgX = x * 20;
+                const bgY = y * 20;
+                document.querySelector('.hero-section').style.setProperty('--bg-offset-x', `${bgX}px`);
+                document.querySelector('.hero-section').style.setProperty('--bg-offset-y', `${bgY}px`);
+            }
         });
 
         // Main application class
@@ -631,7 +679,8 @@
 
             async loadScheduledMovies() {
                 const grid = document.getElementById('moviesGrid');
-                grid.innerHTML = '<div class="loading">Loading scheduled movies...</div>';
+                // Show skeleton loaders
+                grid.innerHTML = Array(6).fill(0).map(() => PerformanceUtils.createSkeletonCard()).join('');
 
                 // Ensure scheduleManager is fully initialized
                 await scheduleManager.ensureInitialized();
@@ -735,10 +784,10 @@
                     movie.genreNames.slice(0, 2).join(' • ') : 'General';
                 
                 return `
-                    <div class="movie-card">
+                    <div class="movie-card hover-lift tilt-card scroll-fade-in" data-observe-once="true">
                         <div class="movie-poster" style="${posterPath ? `background-image: url('${posterPath}');` : ''}">
-                            ${!movie.poster_path ? '<div class="poster-fallback">🎬</div>' : ''}
-                            ${movie.vote_average > 8 ? '<div class="featured-badge">Featured</div>' : ''}
+                            ${!movie.poster_path ? '<div class="poster-fallback animate-pulse">🎬</div>' : ''}
+                            ${movie.vote_average > 8 ? '<div class="featured-badge animate-bounce-in">Featured</div>' : ''}
                         </div>
                         <div class="movie-info">
                             <h3 class="movie-title">${movie.title}</h3>
@@ -749,7 +798,7 @@
                                 <div class="showtime-section">
                                     <div class="showtime-date">${showtime.date}</div>
                                     <div class="showtime-details">
-                                        ${showtime.times.map(time => `<div class="time-slot">${time}</div>`).join('')}
+                                        ${showtime.times.map(time => `<div class="time-slot ripple hover-scale">${time}</div>`).join('')}
                                     </div>
                                     <div class="location">
                                         <div class="location-name">${showtime.location.name}</div>
@@ -773,6 +822,12 @@
                     return;
                 }
                 grid.innerHTML = moviesToShow.map(movie => this.createMovieCard(movie)).join('');
+                
+                // Initialize scroll animations for newly added cards
+                setTimeout(() => {
+                    initScrollAnimations();
+                    init3DCards();
+                }, 100);
             }
 
             filterMovies(filter) {
@@ -825,6 +880,31 @@
         let app;
         document.addEventListener('DOMContentLoaded', () => {
             app = new CineClubApp();
+            
+            // Initialize scroll progress bar
+            const scrollProgress = document.querySelector('.scroll-progress');
+            const backToTop = document.querySelector('.back-to-top');
+            
+            window.addEventListener('scroll', () => {
+                const winScroll = document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = (winScroll / height) * 100;
+                scrollProgress.style.width = scrolled + '%';
+                
+                // Show/hide back to top button
+                if (winScroll > 300) {
+                    backToTop.classList.add('visible');
+                } else {
+                    backToTop.classList.remove('visible');
+                }
+            });
+            
+            // Remove curtain after page load
+            setTimeout(() => {
+                document.querySelectorAll('.cinema-curtain').forEach(curtain => {
+                    curtain.style.display = 'none';
+                });
+            }, 1500);
         });
     </script>
 </body>

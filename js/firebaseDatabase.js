@@ -46,7 +46,6 @@ class FirebaseDatabase {
             });
             
             await batch.commit();
-            console.log('Schedules saved to Firestore');
             return true;
         } catch (error) {
             console.error('Error saving to Firestore:', error);
@@ -70,7 +69,6 @@ class FirebaseDatabase {
                 schedules[doc.id] = data.movies || [];
             });
             
-            console.log('Schedules loaded from Firestore:', schedules);
             return schedules;
         } catch (error) {
             console.error('Error loading from Firestore:', error);
